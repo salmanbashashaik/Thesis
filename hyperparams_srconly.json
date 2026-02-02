@@ -3,9 +3,9 @@
   "pdgm_root": "/home/j98my/Pre-Processing/prep/pdgm_target_aligned",
   "fewshot": "/home/j98my/Pre-Processing/prep/pdgm_fewshot.txt",
   "outdir": "/home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED",
-  "vae_ckpt": "",
-  "unet_ckpt": "",
-  "ema_ckpt": "",
+  "vae_ckpt": "/home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/vae_final.pt", #Done 10-shot training
+  "unet_ckpt": "/home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/unet_ldm_src_ep300.pt", #Done source only training
+  "ema_ckpt": "/home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/ema_ldm_src_ep300.pt", #Done source only training
   "epochs_vae_src": 0,
   "epochs_vae_tgt": 0,
   "epochs_ldm_src": 0,

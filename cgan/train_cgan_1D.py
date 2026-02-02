@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 train_cgan_1D.py — Mask-conditioned 3D cGAN for few-/zero-shot cross-domain MRI generation
 
@@ -18,28 +22,34 @@ Inputs expected (from the preprocessing step):
 # Imports
 # ============================================================
 # - os/json/random/argparse/pathlib: run configuration, filesystem, CLI args, reproducibility
+# Import dependencies used by this module.
 import os, json, random, argparse
 from pathlib import Path
 
 # - numpy: array handling + nibabel interop
+# Import dependencies used by this module.
 import numpy as np
 
 # - torch: model building, training loops, losses, interpolation, autograd
+# Import dependencies used by this module.
 import torch, torch.nn as nn, torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
 # AMP (automatic mixed precision):
 # - torch.amp provides autocast + GradScaler (newer API than torch.cuda.amp)
 # - note: scaler/autocast are enabled only on CUDA
+# Import dependencies used by this module.
 import torch.amp as amp
 
 # Medical imaging IO:
 # - nibabel loads NIfTI (.nii/.nii.gz) volumes and provides affine matrices
+# Import dependencies used by this module.
 import nibabel as nib
 
 # ============================================================
 # Repro & small utils
 # ============================================================
+# Function: `set_seed` implements a reusable processing step.
 def set_seed(seed: int = 42):
     """
     Make runs reproducible (as much as PyTorch allows).
@@ -57,10 +67,13 @@ def set_seed(seed: int = 42):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
+# Function: `to_torch` implements a reusable processing step.
 def to_torch(x):
     """Convert numpy -> torch with a defensive copy (avoids non-contig memory issues)."""
+    # Return the computed value to the caller.
     return torch.from_numpy(x.copy())
 
+# Function: `load_vol` implements a reusable processing step.
 def load_vol(path):  # float32 in [-1,1]
     """
     Load a modality volume as float32 and map to [-1, 1].
@@ -71,22 +84,28 @@ def load_vol(path):  # float32 in [-1,1]
     """
     img = nib.load(path)
     arr = img.get_fdata(dtype=np.float32)
+    # Control-flow branch for conditional or iterative execution.
     if arr.ndim == 3:
         arr = arr[None]  # [1,D,H,W]
     arr = np.clip(arr, 0.0, 1.0) * 2.0 - 1.0
+    # Return the computed value to the caller.
     return arr
 
+# Function: `load_mask` implements a reusable processing step.
 def load_mask(path):
     """
     Load tumor mask as float32 binary in {0,1}.
     Mask is conditioning only (no segmentation loss in this GAN).
     """
     m = nib.load(path).get_fdata(dtype=np.float32)
+    # Control-flow branch for conditional or iterative execution.
     if m.ndim == 3:
         m = m[None]  # [1,D,H,W]
     m = (m > 0.5).astype(np.float32)
+    # Return the computed value to the caller.
     return m
 
+# Class definition: `EMA` encapsulates related model behavior.
 class EMA:
     """
     Exponential Moving Average of Generator parameters.
@@ -95,6 +114,7 @@ class EMA:
       - GAN training can be noisy; EMA often yields cleaner, more stable samples.
       - We use EMA weights for qualitative exports / final sampling.
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, model, beta=0.999):
         self.m = model
         self.b = beta
@@ -102,20 +122,26 @@ class EMA:
         self.shadow = [p.clone().detach() for p in model.parameters() if p.requires_grad]
 
     @torch.no_grad()
+    # Function: `update` implements a reusable processing step.
     def update(self):
         """shadow = beta*shadow + (1-beta)*param"""
         i = 0
+        # Control-flow branch for conditional or iterative execution.
         for p in self.m.parameters():
+            # Control-flow branch for conditional or iterative execution.
             if not p.requires_grad:
                 continue
             self.shadow[i].mul_(self.b).add_(p.data, alpha=1 - self.b)
             i += 1
 
     @torch.no_grad()
+    # Function: `copy_to` implements a reusable processing step.
     def copy_to(self, target):
         """Copy EMA weights into a target model (e.g., G_ema)."""
         i = 0
+        # Control-flow branch for conditional or iterative execution.
         for p in target.parameters():
+            # Control-flow branch for conditional or iterative execution.
             if not p.requires_grad:
                 continue
             p.data.copy_(self.shadow[i])
@@ -124,6 +150,7 @@ class EMA:
 # ============================================================
 # Data
 # ============================================================
+# Class definition: `VolFolder` encapsulates related model behavior.
 class VolFolder(Dataset):
     """
     Dataset for subjects stored as folders:
@@ -137,15 +164,19 @@ class VolFolder(Dataset):
       mask : torch.FloatTensor (1,D,H,W) in {0,1}
       sid  : string subject id
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, root, subjects=None):
         self.root = root
         subs = sorted(next(os.walk(root))[1])
         # If subjects is passed (few-shot list), restrict to that subset
         self.subs = subjects if subjects else subs
 
+    # Function: `__len__` implements a reusable processing step.
     def __len__(self):
+        # Return the computed value to the caller.
         return len(self.subs)
 
+    # Function: `__getitem__` implements a reusable processing step.
     def __getitem__(self, i):
         sid = self.subs[i]
         d = f"{self.root}/{sid}"
@@ -157,11 +188,13 @@ class VolFolder(Dataset):
         # Load mask (1,D,H,W)
         m = load_mask(f"{d}/mask.nii.gz")
 
+        # Return the computed value to the caller.
         return to_torch(x), to_torch(m), sid
 
 # ============================================================
 # SPADE blocks (3D)
 # ============================================================
+# Class definition: `SPADE3D` encapsulates related model behavior.
 class SPADE3D(nn.Module):
     """
     SPADE layer for 3D volumes:
@@ -169,6 +202,7 @@ class SPADE3D(nn.Module):
       - compute per-voxel gamma/beta from condition tensor
       - apply: norm(x) * (1 + gamma) + beta
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, norm_nc, cond_nc):
         super().__init__()
         self.norm = nn.InstanceNorm3d(norm_nc, affine=False, eps=1e-5)
@@ -182,18 +216,22 @@ class SPADE3D(nn.Module):
         self.mlp_gamma = nn.Conv3d(hidden, norm_nc, 3, padding=1)
         self.mlp_beta  = nn.Conv3d(hidden, norm_nc, 3, padding=1)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x, cond):
         # 1) normalize x
         n = self.norm(x)
 
         # 2) ensure conditioning volume matches x spatial size
+        # Control-flow branch for conditional or iterative execution.
         if x.shape[-3:] != cond.shape[-3:]:
             cond = F.interpolate(cond, size=x.shape[-3:], mode='nearest')
 
         # 3) compute gamma/beta from cond and modulate
         a = self.mlp_shared(cond)
+        # Return the computed value to the caller.
         return n * (1 + self.mlp_gamma(a)) + self.mlp_beta(a)
 
+# Class definition: `SPADEResBlk3D` encapsulates related model behavior.
 class SPADEResBlk3D(nn.Module):
     """
     SPADE Residual Block (3D).
@@ -202,6 +240,7 @@ class SPADEResBlk3D(nn.Module):
       - upsample feature maps by 2x (trilinear) before SPADE+Conv
       - skip path also upsamples so shapes align
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, fin, fout, cond_nc, upsample=False):
         super().__init__()
         self.ups = upsample
@@ -215,12 +254,15 @@ class SPADEResBlk3D(nn.Module):
 
         # Optional 1x1 conv if channel count changes
         self.skip = None
+        # Control-flow branch for conditional or iterative execution.
         if fin != fout:
             self.skip = nn.Conv3d(fin, fout, 1)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x, cond):
         # Main branch
         h = x
+        # Control-flow branch for conditional or iterative execution.
         if self.ups:
             # Upsample features (condition is resized inside SPADE as needed)
             h = F.interpolate(h, scale_factor=2, mode='trilinear', align_corners=False)
@@ -235,15 +277,18 @@ class SPADEResBlk3D(nn.Module):
 
         # Skip branch
         xs = x if self.skip is None else self.skip(x)
+        # Control-flow branch for conditional or iterative execution.
         if self.ups:
             xs = F.interpolate(xs, scale_factor=2, mode='trilinear', align_corners=False)
 
         # Residual addition helps stability and gradient flow
+        # Return the computed value to the caller.
         return h + xs
 
 # ============================================================
 # Generator (mask + domain token conditioning)
 # ============================================================
+# Class definition: `Generator` encapsulates related model behavior.
 class Generator(nn.Module):
     """
     SPADE Generator.
@@ -256,6 +301,7 @@ class Generator(nn.Module):
       - Repeated SPADE upsampling blocks expand spatial resolution
       - Final output is 3 channels (t1,t2,flair) in [-1,1]
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, z_dim=128, base=16, cond_nc=2, out_ch=3):
         super().__init__()
 
@@ -280,6 +326,7 @@ class Generator(nn.Module):
             nn.Tanh()
         )
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, z, cond):
         """
         z:    (B, z_dim)
@@ -291,18 +338,22 @@ class Generator(nn.Module):
         h = self.fc(z).view(B, -1, 1, 1, 1)
 
         # Grow spatial size using SPADE-conditioned residual upsampling blocks
+        # Control-flow branch for conditional or iterative execution.
         for blk in self.blocks:
             h = blk(h, cond)
 
         # Force exact match to data crop size (important if starting resolution differs)
+        # Control-flow branch for conditional or iterative execution.
         if h.shape[-3:] != (D, H, W):
             h = F.interpolate(h, size=(D, H, W), mode='trilinear', align_corners=False)
 
+        # Return the computed value to the caller.
         return self.to_img(h)
 
 # ============================================================
 # Discriminator (PatchGAN-ish conv tower + projection)
 # ============================================================
+# Class definition: `Disc` encapsulates related model behavior.
 class Disc(nn.Module):
     """
     Projection Discriminator with conditioning via concatenated mask.
@@ -318,10 +369,13 @@ class Disc(nn.Module):
       - Global average pool -> feature vector
       - Score = linear(h) + dot(proj(h), emb(domain))
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, in_ch=4, base=16, emb_dim=32):
         super().__init__()
 
+        # Function: `blk` implements a reusable processing step.
         def blk(ci, co):
+            # Return the computed value to the caller.
             return nn.Sequential(
                 nn.Conv3d(ci, co, 3, stride=2, padding=1),
                 nn.LeakyReLU(0.2, True)
@@ -344,10 +398,13 @@ class Disc(nn.Module):
         self.proj = nn.Linear(base * 8, emb_dim)
 
         # Spectral normalization for stability (common in hinge/projection GANs)
+        # Control-flow branch for conditional or iterative execution.
         for m in self.modules():
+            # Control-flow branch for conditional or iterative execution.
             if isinstance(m, (nn.Conv3d, nn.Linear)):
                 nn.utils.spectral_norm(m)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x, mask, domain):
         # Concatenate mask as an additional input channel (conditional D)
         h = torch.cat([x, mask], dim=1)
@@ -357,43 +414,55 @@ class Disc(nn.Module):
 
         out = self.fc(h)
         proj = (self.proj(h) * self.emb(domain)).sum(dim=1, keepdim=True)
+        # Return the computed value to the caller.
         return out + proj
 
 # ============================================================
 # DiffAugment (minimal 3D)
 # ============================================================
+# Function: `diffaug3d` implements a reusable processing step.
 def diffaug3d(x):
     """
     Lightweight augmentation to reduce discriminator overfitting:
       - random flips in depth/height/width
       - mild brightness/contrast jitter in [-1,1] space
     """
+    # Control-flow branch for conditional or iterative execution.
     if random.random() < 0.5:
         x = torch.flip(x, [2])
+    # Control-flow branch for conditional or iterative execution.
     if random.random() < 0.5:
         x = torch.flip(x, [3])
+    # Control-flow branch for conditional or iterative execution.
     if random.random() < 0.5:
         x = torch.flip(x, [4])
+    # Control-flow branch for conditional or iterative execution.
     if random.random() < 0.5:
         a = 1.0 + 0.1 * (2 * random.random() - 1)  # contrast-ish multiplier
         b = 0.1 * (2 * random.random() - 1)        # brightness-ish offset
         x = (x * a + b).clamp(-1, 1)
+    # Return the computed value to the caller.
     return x
 
 # ============================================================
 # Losses
 # ============================================================
+# Function: `hinge_d` implements a reusable processing step.
 def hinge_d(real_logits, fake_logits):
     """
     Discriminator hinge loss:
       L = E[max(0, 1 - D(real))] + E[max(0, 1 + D(fake))]
     """
+    # Return the computed value to the caller.
     return F.relu(1 - real_logits).mean() + F.relu(1 + fake_logits).mean()
 
+# Function: `hinge_g` implements a reusable processing step.
 def hinge_g(fake_logits):
     """Generator hinge loss: maximize D(fake) -> minimize -D(fake)."""
+    # Return the computed value to the caller.
     return -fake_logits.mean()
 
+# Function: `r1_grad_penalty` implements a reusable processing step.
 def r1_grad_penalty(d_out, x):
     """
     R1 penalty on real images:
@@ -406,12 +475,14 @@ def r1_grad_penalty(d_out, x):
         inputs=x,
         create_graph=True
     )[0]
+    # Return the computed value to the caller.
     return (grad.pow(2).flatten(1).sum(1)).mean()
 
 # ============================================================
 # Sampling (writes NIfTI for qualitative checks)
 # ============================================================
 @torch.no_grad()
+# Function: `sample_with_masks` implements a reusable processing step.
 def sample_with_masks(G, outdir, samples, domain_id=1, ema_copy=None):
     """
     Generate a set of samples given a list of masks:
@@ -427,6 +498,7 @@ def sample_with_masks(G, outdir, samples, domain_id=1, ema_copy=None):
     model.eval()
     device = next(model.parameters()).device
 
+    # Control-flow branch for conditional or iterative execution.
     for sid, mpath in samples:
         # Load mask -> (1,D,H,W), batch -> (1,1,D,H,W)
         m = load_mask(mpath)
@@ -448,12 +520,14 @@ def sample_with_masks(G, outdir, samples, domain_id=1, ema_copy=None):
         # Save into subject folder (NOTE: uses identity affine here)
         d = Path(outdir) / sid
         d.mkdir(parents=True, exist_ok=True)
+        # Control-flow branch for conditional or iterative execution.
         for k, mod in enumerate(["t1", "t2", "flair"]):
             nib.save(nib.Nifti1Image(x[k], np.eye(4)), str(d / f"{mod}_synth.nii.gz"))
 
 # ============================================================
 # Train utilities (resize + random crop for VRAM safety)
 # ============================================================
+# Function: `_fit_to_maxdim` implements a reusable processing step.
 def _fit_to_maxdim(x, m, max_dim=128):
     """
     If any spatial dim is bigger than max_dim, isotropically downscale.
@@ -461,12 +535,16 @@ def _fit_to_maxdim(x, m, max_dim=128):
     x: (B,3,D,H,W) in [-1,1]
     m: (B,1,D,H,W) in {0,1}
     """
+    # Control-flow branch for conditional or iterative execution.
     if max_dim is None or max_dim <= 0:
+        # Return the computed value to the caller.
         return x, m
 
     B, C, Dv, Hv, Wv = x.shape
     mx = max(Dv, Hv, Wv)
+    # Control-flow branch for conditional or iterative execution.
     if mx <= max_dim:
+        # Return the computed value to the caller.
         return x, m
 
     scale = max_dim / float(mx)
@@ -475,8 +553,10 @@ def _fit_to_maxdim(x, m, max_dim=128):
     # Images: trilinear (smooth), masks: nearest (binary)
     x = F.interpolate(x, size=(newD, newH, newW), mode='trilinear', align_corners=False)
     m = F.interpolate(m, size=(newD, newH, newW), mode='nearest')
+    # Return the computed value to the caller.
     return x, m
 
+# Function: `_random_crop` implements a reusable processing step.
 def _random_crop(x, m, crop_dim=112):
     """
     Random 3D crop of size crop_dim^3.
@@ -485,11 +565,15 @@ def _random_crop(x, m, crop_dim=112):
       - full volumes might be bigger
       - discriminators in particular get expensive at high res
     """
+    # Control-flow branch for conditional or iterative execution.
     if crop_dim is None or crop_dim <= 0:
+        # Return the computed value to the caller.
         return x, m
 
     B, C, Dv, Hv, Wv = x.shape
+    # Control-flow branch for conditional or iterative execution.
     if min(Dv, Hv, Wv) <= crop_dim:
+        # Return the computed value to the caller.
         return x, m
 
     d = random.randrange(0, Dv - crop_dim + 1)
@@ -498,11 +582,13 @@ def _random_crop(x, m, crop_dim=112):
 
     x = x[:, :, d:d + crop_dim, h:h + crop_dim, w:w + crop_dim]
     m = m[:, :, d:d + crop_dim, h:h + crop_dim, w:w + crop_dim]
+    # Return the computed value to the caller.
     return x, m
 
 # ============================================================
 # Train
 # ============================================================
+# Function: `train` implements a reusable processing step.
 def train(
     gbm_root,
     pdgm_root,
@@ -556,6 +642,7 @@ def train(
 
     pdgm_all = sorted(next(os.walk(pdgm_root))[1])
     few = []
+    # Control-flow branch for conditional or iterative execution.
     if fewshot_path and os.path.exists(fewshot_path):
         few = [l.strip() for l in open(fewshot_path) if l.strip()]
 
@@ -584,6 +671,7 @@ def train(
     # AMP grad scaler: only active on CUDA; on CPU it effectively becomes no-op
     scaler = amp.GradScaler('cuda', enabled=torch.cuda.is_available())
 
+    # Function: `domain_map` implements a reusable processing step.
     def domain_map(domain_id, mask):
         """
         Create generator conditioning tensor:
@@ -592,12 +680,15 @@ def train(
         """
         B, _, Dv, Hv, Wv = mask.shape
         dom = torch.full((B, 1, Dv, Hv, Wv), float(domain_id), device=mask.device)
+        # Return the computed value to the caller.
         return torch.cat([mask, dom], dim=1)
 
     # ============================================================
     # Stage A: Source pretrain (GBM)
     # ============================================================
+    # Control-flow branch for conditional or iterative execution.
     for epoch in range(1, epochs_src + 1):
+        # Control-flow branch for conditional or iterative execution.
         for x, m, _ in gbm_dl:
             x, m = x.to(device), m.to(device)
 
@@ -611,9 +702,11 @@ def train(
             # ----------------------------
             # Discriminator step
             # ----------------------------
+            # Control-flow branch for conditional or iterative execution.
             for p in D.parameters():
                 p.requires_grad = True
 
+            # Control-flow branch for conditional or iterative execution.
             with amp.autocast('cuda', enabled=torch.cuda.is_available()):
                 z = torch.randn(x.size(0), 128, device=device)
                 fake = G(z, cond).detach()  # detach: don't backprop into G on D step
@@ -626,6 +719,7 @@ def train(
 
             # R1 regularization on real images
             x.requires_grad_(True)
+            # Control-flow branch for conditional or iterative execution.
             with amp.autocast('cuda', enabled=torch.cuda.is_available()):
                 r1 = r1_grad_penalty(D(x, m, dom0), x) * (r1_gamma_src / 2.0)
 
@@ -636,9 +730,11 @@ def train(
             # ----------------------------
             # Generator step
             # ----------------------------
+            # Control-flow branch for conditional or iterative execution.
             for p in D.parameters():
                 p.requires_grad = False
 
+            # Control-flow branch for conditional or iterative execution.
             with amp.autocast('cuda', enabled=torch.cuda.is_available()):
                 z = torch.randn(x.size(0), 128, device=device)
                 fake = G(z, cond)
@@ -662,12 +758,16 @@ def train(
     # ============================================================
     # Stage B: Few-shot target fine-tune (PDGM)
     # ============================================================
+    # Control-flow branch for conditional or iterative execution.
     if epochs_tgt > 0 and pdgm_fs is not None:
         # Freeze early SPADE blocks briefly to preserve coarse priors
         warmup = 500
         frozen = []
+        # Control-flow branch for conditional or iterative execution.
         for n, mmod in G.named_modules():
+            # Control-flow branch for conditional or iterative execution.
             if isinstance(mmod, nn.Conv3d) and any(s in n for s in [".blocks.0", ".blocks.1"]):
+                # Control-flow branch for conditional or iterative execution.
                 for p in mmod.parameters():
                     p.requires_grad = False
                     frozen.append(p)
@@ -676,16 +776,21 @@ def train(
         gbm_iter = iter(gbm_dl)
         it = 0
 
+        # Control-flow branch for conditional or iterative execution.
         for epoch in range(1, epochs_tgt + 1):
+            # Control-flow branch for conditional or iterative execution.
             for x, m, _ in pdgm_fs:
                 it += 1
 
                 # Rehearsal mixing:
                 # - 75% PDGM updates (domain=1)
                 # - 25% GBM updates (domain=0) to reduce catastrophic forgetting
+                # Control-flow branch for conditional or iterative execution.
                 if random.random() < 0.25:
+                    # Control-flow branch for conditional or iterative execution.
                     try:
                         x, m, _ = next(gbm_iter)
+                    # Control-flow branch for conditional or iterative execution.
                     except StopIteration:
                         gbm_iter = iter(gbm_dl)
                         x, m, _ = next(gbm_iter)
@@ -703,6 +808,7 @@ def train(
                 # ----------------------------
                 # D step
                 # ----------------------------
+                # Control-flow branch for conditional or iterative execution.
                 with amp.autocast('cuda', enabled=torch.cuda.is_available()):
                     z = torch.randn(x.size(0), 128, device=device)
                     fake = G(z, cond).detach()
@@ -713,6 +819,7 @@ def train(
 
                 # R1 penalty
                 x.requires_grad_(True)
+                # Control-flow branch for conditional or iterative execution.
                 with amp.autocast('cuda', enabled=torch.cuda.is_available()):
                     r1 = r1_grad_penalty(D(x, m, dom), x) * (r1_gamma_tgt / 2.0)
 
@@ -723,6 +830,7 @@ def train(
                 # ----------------------------
                 # G step
                 # ----------------------------
+                # Control-flow branch for conditional or iterative execution.
                 with amp.autocast('cuda', enabled=torch.cuda.is_available()):
                     z = torch.randn(x.size(0), 128, device=device)
                     fake = G(z, cond)
@@ -735,7 +843,9 @@ def train(
                 ema.update()
 
                 # Unfreeze early layers after warmup iterations
+                # Control-flow branch for conditional or iterative execution.
                 if it == warmup:
+                    # Control-flow branch for conditional or iterative execution.
                     for p in frozen:
                         p.requires_grad = True
 
@@ -754,6 +864,8 @@ def train(
 # ============================================================
 # CLI entry point
 # ============================================================
+# Run the CLI entry point when this file is executed directly.
+# Control-flow branch for conditional or iterative execution.
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
 

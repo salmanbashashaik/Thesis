@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 Train an AlexNet-like classifier (AlexLite-DG) on diffuse glioma MR slices.
 
@@ -33,6 +37,7 @@ Notes:
 - Requires: nibabel, numpy, torch, scikit-learn, pillow, tqdm
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 import os
 import sys
@@ -59,7 +64,9 @@ from tqdm import tqdm
 # ---------------------------
 # Model: AlexLite-DG (2D)
 # ---------------------------
+# Class definition: `AlexLiteDG` encapsulates related model behavior.
 class AlexLiteDG(nn.Module):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, num_classes: int = 2):
         super().__init__()
         self.features = nn.Sequential(
@@ -87,6 +94,7 @@ class AlexLiteDG(nn.Module):
         self.fc1 = nn.Linear(256, 256)
         self.fc2 = nn.Linear(256, num_classes)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x):
         feats = self.features(x)              # (B,256,H',W')
         gap = F.adaptive_avg_pool2d(feats, 1) # (B,256,1,1)
@@ -95,34 +103,46 @@ class AlexLiteDG(nn.Module):
         x = F.relu(self.fc1(x), inplace=True)
         x = self.dropout(x)
         logits = self.fc2(x)
+        # Return the computed value to the caller.
         return logits, feats
 
 # ---------------------------
 # Data utilities
 # ---------------------------
 
+# Function: `load_nifti` implements a reusable processing step.
 def load_nifti(path: Path) -> np.ndarray:
     img = nib.load(str(path))
     data = img.get_fdata(dtype=np.float32)
+    # Return the computed value to the caller.
     return np.asarray(data, dtype=np.float32)
 
 
+# Function: `zscore_per_volume` implements a reusable processing step.
 def zscore_per_volume(vol: np.ndarray, eps: float = 1e-6) -> np.ndarray:
     m = float(np.mean(vol))
     s = float(np.std(vol))
+    # Control-flow branch for conditional or iterative execution.
     if s < eps:
+        # Return the computed value to the caller.
         return np.zeros_like(vol, dtype=np.float32)
+    # Return the computed value to the caller.
     return (vol - m) / (s + eps)
 
 
+# Function: `minmax_per_volume` implements a reusable processing step.
 def minmax_per_volume(vol: np.ndarray, eps: float = 1e-6) -> np.ndarray:
     vmin = float(np.min(vol))
     vmax = float(np.max(vol))
+    # Control-flow branch for conditional or iterative execution.
     if vmax - vmin < eps:
+        # Return the computed value to the caller.
         return np.zeros_like(vol, dtype=np.float32)
+    # Return the computed value to the caller.
     return (vol - vmin) / (vmax - vmin + eps)
 
 
+# Function: `center_crop_or_pad` implements a reusable processing step.
 def center_crop_or_pad(img: torch.Tensor, size: int) -> torch.Tensor:
     # img: (C,H,W). We resize with bilinear then center-crop/pad to square size.
     c, h, w = img.shape
@@ -138,20 +158,26 @@ def center_crop_or_pad(img: torch.Tensor, size: int) -> torch.Tensor:
     # If smaller, pad
     pad_h = size - img.shape[1]
     pad_w = size - img.shape[2]
+    # Control-flow branch for conditional or iterative execution.
     if pad_h > 0 or pad_w > 0:
         img = TF.pad(img, [pad_w // 2, pad_h // 2, pad_w - pad_w // 2, pad_h - pad_h // 2])
+    # Return the computed value to the caller.
     return img
 
 
+# Class definition: `SliceIndex` encapsulates related model behavior.
 class SliceIndex:
     __slots__ = ("patient", "k", "label")
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, patient: str, k: int, label: int):
         self.patient = patient
         self.k = k  # slice index along axial (Z)
         self.label = label  # 0/1
 
 
+# Class definition: `GliomaSliceDataset` encapsulates related model behavior.
 class GliomaSliceDataset(Dataset):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(
         self,
         patient_dirs: List[Path],
@@ -174,6 +200,7 @@ class GliomaSliceDataset(Dataset):
 
         # Build slice index list per patient
         self.meta: Dict[str, Dict[str, Path]] = {}
+        # Control-flow branch for conditional or iterative execution.
         for p in self.patient_dirs:
             paths = {
                 "t1": p / "t1.nii.gz",
@@ -181,6 +208,7 @@ class GliomaSliceDataset(Dataset):
                 "flair": p / "flair.nii.gz",
                 "mask": p / "mask.nii.gz",
             }
+            # Control-flow branch for conditional or iterative execution.
             if not all(pp.exists() for pp in paths.values()):
                 continue
             self.meta[p.name] = paths
@@ -188,25 +216,31 @@ class GliomaSliceDataset(Dataset):
         self.slice_index: List[SliceIndex] = []
         self._build_index()
 
+    # Function: `_build_index` implements a reusable processing step.
     def _build_index(self):
         tmp_pos: List[SliceIndex] = []
         tmp_neg: List[SliceIndex] = []
+        # Control-flow branch for conditional or iterative execution.
         for patient, paths in self.meta.items():
             mask = load_nifti(paths["mask"]).astype(np.float32)
             # assume axial along last axis (Z)
             depth = mask.shape[-1]
+            # Control-flow branch for conditional or iterative execution.
             for k in range(depth):
                 msl = mask[:, :, k]
                 label = int(np.any(msl > 0.0))
+                # Control-flow branch for conditional or iterative execution.
                 if label == 1:
                     tmp_pos.append(SliceIndex(patient, k, 1))
                 else:
                     tmp_neg.append(SliceIndex(patient, k, 0))
         # Optional balancing
+        # Control-flow branch for conditional or iterative execution.
         if self.balance_neg_pos and len(tmp_pos) > 0:
             self.rng.shuffle(tmp_neg)
             tmp_neg = tmp_neg[: len(tmp_pos)]
         # Optional cap on positive fraction
+        # Control-flow branch for conditional or iterative execution.
         if self.pos_frac_cap < 1.0 and len(tmp_pos) > 0:
             cap = int(math.floor(len(tmp_pos) * self.pos_frac_cap))
             self.rng.shuffle(tmp_pos)
@@ -214,38 +248,55 @@ class GliomaSliceDataset(Dataset):
         self.slice_index = tmp_pos + tmp_neg
         self.rng.shuffle(self.slice_index)
 
+    # Function: `__len__` implements a reusable processing step.
     def __len__(self) -> int:
+        # Return the computed value to the caller.
         return len(self.slice_index)
 
+    # Function: `_load_patient_modalities` implements a reusable processing step.
     def _load_patient_modalities(self, patient: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         paths = self.meta[patient]
         t1 = load_nifti(paths["t1"])  # HxWxZ
         t2 = load_nifti(paths["t2"])  # HxWxZ
         fl = load_nifti(paths["flair"])  # HxWxZ
         ms = load_nifti(paths["mask"]).astype(np.float32)
+        # Return the computed value to the caller.
         return t1, t2, fl, ms
 
+    # Function: `_norm_vol` implements a reusable processing step.
     def _norm_vol(self, vol: np.ndarray) -> np.ndarray:
+        # Control-flow branch for conditional or iterative execution.
         if self.norm == "zscore":
+            # Return the computed value to the caller.
             return zscore_per_volume(vol)
+        # Control-flow branch for conditional or iterative execution.
         elif self.norm == "minmax":
+            # Return the computed value to the caller.
             return minmax_per_volume(vol)
         else:
+            # Return the computed value to the caller.
             return vol
 
+    # Function: `_apply_augment` implements a reusable processing step.
     def _apply_augment(self, x: torch.Tensor) -> torch.Tensor:
         # x: (C,H,W)
+        # Control-flow branch for conditional or iterative execution.
         if self.augment:
+            # Control-flow branch for conditional or iterative execution.
             if self.rng.random() < 0.5:
                 x = TF.hflip(x)
+            # Control-flow branch for conditional or iterative execution.
             if self.rng.random() < 0.5:
                 x = TF.vflip(x)
             # small random affine
+            # Control-flow branch for conditional or iterative execution.
             if self.rng.random() < 0.3:
                 angle = self.rng.uniform(-7.0, 7.0)
                 x = TF.rotate(x, angle, interpolation=TF.InterpolationMode.BILINEAR)
+        # Return the computed value to the caller.
         return x
 
+    # Function: `__getitem__` implements a reusable processing step.
     def __getitem__(self, idx: int):
         si = self.slice_index[idx]
         # Load volumes per patient lazily per sample;
@@ -265,41 +316,53 @@ class GliomaSliceDataset(Dataset):
         x = center_crop_or_pad(x, self.img_size)
         x = self._apply_augment(x)
         y = torch.tensor(si.label, dtype=torch.long)
+        # Return the computed value to the caller.
         return x, y
 
 
 # ---------------------------
 # Grad-CAM helper
 # ---------------------------
+# Class definition: `GradCAM` encapsulates related model behavior.
 class GradCAM:
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, model: AlexLiteDG, target_layer_name: str = "features"):
         self.model = model
         self.model.eval()
         self.features = None
         self.gradients = None
         # hook the last conv block output
+        # Function: `fwd_hook` implements a reusable processing step.
         def fwd_hook(module, inp, out):
             self.features = out.detach()
+        # Function: `bwd_hook` implements a reusable processing step.
         def bwd_hook(module, grad_in, grad_out):
             self.gradients = grad_out[0].detach()
         # register on the last layer of features
         self.handle_fwd = model.features.register_forward_hook(fwd_hook)
         self.handle_bwd = model.features.register_backward_hook(bwd_hook)
 
+    # Function: `__del__` implements a reusable processing step.
     def __del__(self):
+        # Control-flow branch for conditional or iterative execution.
         try:
             self.handle_fwd.remove()
             self.handle_bwd.remove()
+        # Control-flow branch for conditional or iterative execution.
         except Exception:
             pass
 
     @torch.no_grad()
+    # Function: `_safe_softmax` implements a reusable processing step.
     def _safe_softmax(self, logits):
+        # Return the computed value to the caller.
         return F.softmax(logits, dim=1)
 
+    # Function: `generate` implements a reusable processing step.
     def generate(self, x: torch.Tensor, class_idx: int | None = None) -> Tuple[torch.Tensor, int]:
         # x: (1,3,H,W)
         logits, feats = self.model(x)
+        # Control-flow branch for conditional or iterative execution.
         if class_idx is None:
             class_idx = int(torch.argmax(logits, dim=1).item())
         # backward for chosen class
@@ -316,6 +379,7 @@ class GradCAM:
         cam /= (cam.max() + 1e-6)
         cam = F.interpolate(cam.unsqueeze(1), size=x.shape[-2:], mode="bilinear", align_corners=False)
         cam = cam.squeeze(1)  # (1,H,W)
+        # Return the computed value to the caller.
         return cam, class_idx
 
 
@@ -323,6 +387,7 @@ class GradCAM:
 # Training / Eval loops
 # ---------------------------
 
+# Function: `set_seed` implements a reusable processing step.
 def set_seed(seed: int):
     random.seed(seed)
     np.random.seed(seed)
@@ -330,6 +395,7 @@ def set_seed(seed: int):
     torch.cuda.manual_seed_all(seed)
 
 
+# Function: `patient_split` implements a reusable processing step.
 def patient_split(root: Path, seed: int, train_ratio=0.7, val_ratio=0.15) -> Tuple[List[Path], List[Path], List[Path]]:
     patients = [p for p in root.iterdir() if p.is_dir()]
     rng = random.Random(seed)
@@ -340,19 +406,23 @@ def patient_split(root: Path, seed: int, train_ratio=0.7, val_ratio=0.15) -> Tup
     train = patients[:n_train]
     val = patients[n_train:n_train+n_val]
     test = patients[n_train+n_val:]
+    # Return the computed value to the caller.
     return train, val, test
 
 
+# Function: `run_epoch` implements a reusable processing step.
 def run_epoch(model, loader, device, criterion, optimizer=None) -> Tuple[float, float, float]:
     is_train = optimizer is not None
     model.train(is_train)
     total_loss = 0.0
     ys, ps = [], []
+    # Control-flow branch for conditional or iterative execution.
     for xb, yb in loader:
         xb = xb.to(device)
         yb = yb.to(device)
         logits, _ = model(xb)
         loss = criterion(logits, yb)
+        # Control-flow branch for conditional or iterative execution.
         if is_train:
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
@@ -363,29 +433,37 @@ def run_epoch(model, loader, device, criterion, optimizer=None) -> Tuple[float, 
         ps.append(prob.detach().cpu().numpy())
     ys = np.concatenate(ys, axis=0)
     ps = np.concatenate(ps, axis=0)
+    # Control-flow branch for conditional or iterative execution.
     try:
         auc = roc_auc_score(ys, ps)
+    # Control-flow branch for conditional or iterative execution.
     except ValueError:
         auc = float("nan")
     pred = (ps >= 0.5).astype(np.int32)
     acc = accuracy_score(ys, pred)
     avg_loss = total_loss / max(1, len(loader.dataset))
+    # Return the computed value to the caller.
     return avg_loss, auc, acc
 
 
+# Function: `save_checkpoint` implements a reusable processing step.
 def save_checkpoint(state: dict, outpath: Path):
     outpath.parent.mkdir(parents=True, exist_ok=True)
     torch.save(state, str(outpath))
 
 
+# Function: `save_gradcam_examples` implements a reusable processing step.
 def save_gradcam_examples(model, loader, device, outdir: Path, max_batches: int = 2):
     model.eval()
     cammer = GradCAM(model)
     outdir.mkdir(parents=True, exist_ok=True)
     count = 0
+    # Control-flow branch for conditional or iterative execution.
     for i, (xb, yb) in enumerate(loader):
+            # Control-flow branch for conditional or iterative execution.
             if i >= max_batches:
                 break
+            # Control-flow branch for conditional or iterative execution.
             for j in range(xb.size(0)):
                 x = xb[j:j+1].to(device)
                 cam, cls_idx = cammer.generate(x, None)
@@ -415,6 +493,7 @@ def save_gradcam_examples(model, loader, device, outdir: Path, max_batches: int 
 # Main
 # ---------------------------
 
+# Function: `main` implements a reusable processing step.
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data_root", type=str, required=True,
@@ -474,6 +553,7 @@ def main():
     # Class weights (optional): infer from training set distribution
     # quick pass to count labels
     lbls = []
+    # Control-flow branch for conditional or iterative execution.
     for _, y in DataLoader(train_ds, batch_size=128, shuffle=False, num_workers=0):
         lbls.append(y.numpy())
     lbls = np.concatenate(lbls) if len(lbls) else np.array([0,1])
@@ -492,6 +572,7 @@ def main():
     best_val_auc = -1.0
     ckpt_path = outdir / "best.pt"
 
+    # Control-flow branch for conditional or iterative execution.
     for epoch in range(1, args.epochs + 1):
         t0 = time.time()
         tr_loss, tr_auc, tr_acc = run_epoch(model, train_ld, device, criterion, optimizer)
@@ -511,6 +592,7 @@ def main():
         }
         print(json.dumps(log))
 
+        # Control-flow branch for conditional or iterative execution.
         if va_auc > best_val_auc:
             best_val_auc = va_auc
             save_checkpoint({
@@ -521,6 +603,7 @@ def main():
                 "args": vars(args),
             }, ckpt_path)
 
+        # Control-flow branch for conditional or iterative execution.
         if (epoch % args.save_every) == 0:
             save_checkpoint({
                 "epoch": epoch,
@@ -531,6 +614,7 @@ def main():
             }, outdir / f"epoch_{epoch:03d}.pt")
 
     # Load best and evaluate on test
+    # Control-flow branch for conditional or iterative execution.
     if ckpt_path.exists():
         state = torch.load(str(ckpt_path), map_location=device)
         model.load_state_dict(state["model_state"]) 
@@ -538,11 +622,14 @@ def main():
     print(json.dumps({"phase": "test", "loss": te_loss, "auc": te_auc, "acc": te_acc}))
 
     # Export a few Grad-CAM panels
+    # Control-flow branch for conditional or iterative execution.
     if args.export_cam:
         cam_dir = outdir / "gradcam"
         save_gradcam_examples(model, val_ld, device, cam_dir, max_batches=2)
         print(json.dumps({"gradcam_dir": str(cam_dir)}))
 
 
+# Run the CLI entry point when this file is executed directly.
+# Control-flow branch for conditional or iterative execution.
 if __name__ == "__main__":
     main()

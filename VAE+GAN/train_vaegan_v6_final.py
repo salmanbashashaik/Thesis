@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 train_vaegan_v6_final.py — VAE-GAN with Organized Snapshots
 ----------------------------------------------------
@@ -7,6 +11,7 @@ train_vaegan_v6_final.py — VAE-GAN with Organized Snapshots
 - Snapshots saved as: /runs/src_e50_samples/{SubjectID}/{modality}_synth.nii.gz
 """
 
+# Import dependencies used by this module.
 import os
 import random
 import argparse
@@ -26,6 +31,7 @@ IMAGE_CHANNELS = 3
 LATENT_DIM = 1024
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# Function: `set_seed` implements a reusable processing step.
 def set_seed(seed: int = 42):
     print(f"[SETUP] Using seed = {seed}")
     random.seed(seed)
@@ -35,22 +41,27 @@ def set_seed(seed: int = 42):
     torch.backends.cudnn.deterministic = True
 
 # --- 1. ROBUST DATA LOADING ---
+# Function: `load_vol_safe` implements a reusable processing step.
 def load_vol_safe(path):
     """Loads volume, handles NaNs, and normalizes strictly to [-1, 1]."""
+    # Control-flow branch for conditional or iterative execution.
     try:
         img = nib.load(path)
         arr = img.get_fdata(dtype=np.float32)
         arr = np.nan_to_num(arr) # Fix NaNs
         
+        # Control-flow branch for conditional or iterative execution.
         if arr.ndim == 3: arr = arr[None] 
         
         # Robust Scaling (Percentile based)
         mask = arr > 0
+        # Control-flow branch for conditional or iterative execution.
         if mask.sum() > 0:
             mn = np.percentile(arr[mask], 1.0)
             mx = np.percentile(arr[mask], 99.0) # Cut top 0.5% outliers
             arr = np.clip(arr, mn, mx)
             
+            # Control-flow branch for conditional or iterative execution.
             if mx - mn > 1e-6:
                 arr = (arr - mn) / (mx - mn) # [0, 1]
                 arr = arr * 2.0 - 1.0        # [-1, 1]
@@ -59,35 +70,49 @@ def load_vol_safe(path):
         else:
             arr = np.zeros_like(arr) - 1.0 # Background
             
+        # Return the computed value to the caller.
         return arr
+    # Control-flow branch for conditional or iterative execution.
     except Exception as e:
         print(f"[ERR] Failed to load {path}: {e}")
+        # Return the computed value to the caller.
         return np.zeros((3, IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE), dtype=np.float32) - 1.0
 
+# Class definition: `VolFolder` encapsulates related model behavior.
 class VolFolder(Dataset):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, root, subjects=None):
         self.root = root
+        # Control-flow branch for conditional or iterative execution.
         try:
             full_subs = sorted(next(os.walk(root))[1])
+        # Control-flow branch for conditional or iterative execution.
         except StopIteration:
             raise ValueError(f"Root dir {root} is empty or invalid.")
         
         self.subs = subjects if subjects else full_subs
+        # Control-flow branch for conditional or iterative execution.
         if not self.subs: raise ValueError(f"No subjects found in {root}")
         print(f"[DATA] Found {len(self.subs)} subjects in {root}")
 
+    # Function: `__len__` implements a reusable processing step.
     def __len__(self): return len(self.subs)
+    # Function: `__getitem__` implements a reusable processing step.
     def __getitem__(self, i):
         s = self.subs[i]
         d = os.path.join(self.root, s)
+        # Control-flow branch for conditional or iterative execution.
         try:
             imgs = []
             # LOAD ORDER: T1, T2, FLAIR
+            # Control-flow branch for conditional or iterative execution.
             for m in ["t1", "t2", "flair"]:
                 p = os.path.join(d, f"{m}.nii.gz")
+                # Control-flow branch for conditional or iterative execution.
                 if not os.path.exists(p):
                     # Fallback: search for filenames containing modality
                     cands = [f for f in os.listdir(d) if m in f and f.endswith('.nii.gz')]
+                    # Control-flow branch for conditional or iterative execution.
                     if cands:
                         p = os.path.join(d, cands[0])
                     else:
@@ -99,6 +124,7 @@ class VolFolder(Dataset):
 
             # To torch and RESIZE to [3, 112, 112, 112]
             x = torch.from_numpy(x)  # [C, D, H, W]
+            # Control-flow branch for conditional or iterative execution.
             if x.shape[1:] != (IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE):
                 # DataLoader expects [C, D, H, W] but F.interpolate wants [N, C, D, H, W]
                 x = x.unsqueeze(0)  # [1, C, D, H, W]
@@ -110,14 +136,18 @@ class VolFolder(Dataset):
                 )
                 x = x.squeeze(0)  # back to [C, 112, 112, 112]
 
+            # Return the computed value to the caller.
             return x, s
 
+        # Control-flow branch for conditional or iterative execution.
         except Exception as e:
             print(f"[WARN] Error loading {s}: {e}")
+            # Return the computed value to the caller.
             return torch.zeros((3, IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE)) - 1.0, s
 
 
 # --- 2. SAFETY & VISUALIZATION UTILS ---
+# Function: `save_nifti` implements a reusable processing step.
 def save_nifti(tensor, path, verbose=True):
     """
     Saves tensor to NIfTI.
@@ -130,21 +160,26 @@ def save_nifti(tensor, path, verbose=True):
     arr = np.clip(arr, 0.0, 1.0)
     
     # Check emptiness
+    # Control-flow branch for conditional or iterative execution.
     if verbose:
         mn, mx, mean = arr.min(), arr.max(), arr.mean()
+        # Control-flow branch for conditional or iterative execution.
         if mean < 0.001:
             print(f"[CRITICAL WARN] SAVED IMAGE IS BLACK! {path}")
     
     nib.save(nib.Nifti1Image(arr, np.eye(4)), path)
 
+# Function: `validate_input_data` implements a reusable processing step.
 def validate_input_data(dataloader, outdir):
     """Checks the first batch immediately."""
     print("--- RUNNING IMMEDIATE DATA SANITY CHECK ---")
+    # Control-flow branch for conditional or iterative execution.
     try:
         x, sid = next(iter(dataloader))
         p = os.path.join(outdir, f"sanity_check_input_{sid[0]}.nii.gz")
         save_nifti(x[0, 0], p) # Save T1
         print("--- SANITY CHECK COMPLETE: CHECK FILE NOW ---")
+    # Control-flow branch for conditional or iterative execution.
     except Exception as e:
         print(f"[CRITICAL FAILURE] Data Loader crashed: {e}")
         exit(1)
@@ -152,7 +187,9 @@ def validate_input_data(dataloader, outdir):
 # --- 3. MODELS (VAE + Spectral Norm D) ---
 LATENT_DIM = 256   # set this near the top of the file
 
+# Class definition: `VAEEncoder3D` encapsulates related model behavior.
 class VAEEncoder3D(nn.Module):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self):
         super().__init__()
         self.net = nn.Sequential(
@@ -182,26 +219,34 @@ class VAEEncoder3D(nn.Module):
         self.fc_mu     = nn.Linear(self.flat_dim, LATENT_DIM)
         self.fc_logvar = nn.Linear(self.flat_dim, LATENT_DIM)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x):
         h = self.net(x)              # [B, 128, 7, 7, 7]
         h = h.view(h.size(0), -1)    # [B, 43904]
         # print("[ENC SHAPE]", h.shape)  # keep for debugging if you like
+        # Return the computed value to the caller.
         return self.fc_mu(h), self.fc_logvar(h)
 
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x):
         h = self.net(x)
         h = h.view(h.size(0), -1)
         # print("[ENC SHAPE]", h.shape)
+        # Return the computed value to the caller.
         return self.fc_mu(h), self.fc_logvar(h)
 
+# Class definition: `VAEDecoder3D` encapsulates related model behavior.
 class VAEDecoder3D(nn.Module):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self):
         super().__init__()
         self.fc = nn.Linear(LATENT_DIM, 128 * 7 * 7 * 7)
         self.unflat = nn.Unflatten(1, (128, 7, 7, 7))
 
+        # Function: `up` implements a reusable processing step.
         def up(in_c, out_c):
+            # Return the computed value to the caller.
             return nn.Sequential(
                 nn.Upsample(scale_factor=2, mode='trilinear', align_corners=False),
                 nn.Conv3d(in_c, out_c, 3, 1, 1),
@@ -223,32 +268,44 @@ class VAEDecoder3D(nn.Module):
             nn.Tanh(),
         )
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, z, target_shape=None):
         h = self.unflat(self.fc(z))  # [B, 128, 7, 7, 7]
         h = self.net(h)              # [B, 3, 112, 112, 112]
+        # Return the computed value to the caller.
         return h
 
 
 
+# Class definition: `VAE3D` encapsulates related model behavior.
 class VAE3D(nn.Module):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self):
         super().__init__()
         self.enc = VAEEncoder3D()
         self.dec = VAEDecoder3D()
     
+    # Function: `reparameterize` implements a reusable processing step.
     def reparameterize(self, mu, logvar):
         std = torch.exp(0.5 * torch.clamp(logvar, -10, 10))
+        # Return the computed value to the caller.
         return mu + std * torch.randn_like(std)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x):
         mu, logvar = self.enc(x)
         z = self.reparameterize(mu, logvar)
+        # Return the computed value to the caller.
         return self.dec(z, x.shape[2:]), mu, logvar
 
+# Class definition: `Discriminator3D` encapsulates related model behavior.
 class Discriminator3D(nn.Module):
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self):
         super().__init__()
+        # Function: `block` implements a reusable processing step.
         def block(in_c, out_c):
+            # Return the computed value to the caller.
             return nn.Sequential(
                 nn.utils.spectral_norm(nn.Conv3d(in_c, out_c, 4, 2, 1)),
                 nn.LeakyReLU(0.2, True)
@@ -257,11 +314,14 @@ class Discriminator3D(nn.Module):
             block(3, 32), block(32, 64), block(64, 128), block(128, 256),
             nn.Conv3d(256, 1, 4, 1, 0)
         )
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x): return self.net(x)
 
 # --- 4. TRAINING LOGIC ---
+# Function: `train_stage` implements a reusable processing step.
 def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, use_gan = False):
     """Unified training loop."""
+    # Control-flow branch for conditional or iterative execution.
     if not dataloader or epochs <= 0: return
 
     base_L_REC = 20.0
@@ -272,6 +332,7 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
 
     print(f"--- Starting {stage_name} Training ({epochs} eps) ---")
     
+    # Control-flow branch for conditional or iterative execution.
     for epoch in range(1, epochs + 1):
         kl_factor  = min(1.0, epoch / warmup_epochs_kl)
         gan_factor = min(1.0, epoch / warmup_epochs_gan)
@@ -286,12 +347,15 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
         loss_rec_list = []
         d_status = "ACTIVE"
 
+        # Control-flow branch for conditional or iterative execution.
         for i, (real, _) in enumerate(dataloader):
             real = real.to(DEVICE)
             
             # --- A. TRAIN DISCRIMINATOR ---
+            # Control-flow branch for conditional or iterative execution.
             if use_gan:
 
+                # Control-flow branch for conditional or iterative execution.
                 with torch.no_grad():
                     fake, _, _ = vae(real)
                 
@@ -300,6 +364,7 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
                 loss_d = (F.relu(1.0 - d_real).mean() + F.relu(1.0 + d_fake).mean())
                 
                 # ADAPTIVE PAUSE
+                # Control-flow branch for conditional or iterative execution.
                 if loss_d.item() > 0.5:
                     opt_d.zero_grad()
                     loss_d.backward()
@@ -316,6 +381,7 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
             # --- B. TRAIN GENERATOR ---
             fake, mu, logvar = vae(real)
 
+            # Control-flow branch for conditional or iterative execution.
             if use_gan:
                 d_fake_new = D(fake)
                 l_adv = -d_fake_new.mean()
@@ -339,6 +405,7 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
         print(f"[{stage_name}][Ep {epoch}] D: {avg_d:.4f} ({d_status}) | Rec: {avg_rec:.4f}")
 
         # --- SNAPSHOT SAVING (Organized Folders) ---
+        # Control-flow branch for conditional or iterative execution.
         if epoch % 50 == 0 or epoch == epochs:
             print(f"--- Saving Batch Snapshot {stage_name} Ep {epoch} ---")
             vae.eval()
@@ -351,10 +418,14 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
             dl_iter = iter(dataloader)
             samples_saved = 0
             
+            # Control-flow branch for conditional or iterative execution.
             with torch.no_grad():
+                # Control-flow branch for conditional or iterative execution.
                 while samples_saved < 8:
+                    # Control-flow branch for conditional or iterative execution.
                     try:
                         x_batch, sids = next(dl_iter)
+                    # Control-flow branch for conditional or iterative execution.
                     except StopIteration:
                         break # End of data
                     
@@ -362,6 +433,7 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
                     recon, _, _ = vae(x_batch)
                     
                     # Iterate items in batch (usually size 1, so this runs once per load)
+                    # Control-flow branch for conditional or iterative execution.
                     for b in range(x_batch.size(0)):
                         sid = sids[b]
                         
@@ -375,11 +447,13 @@ def train_stage(stage_name, dataloader, vae, D, opt_vae, opt_d, epochs, outdir, 
                         save_nifti(recon[b, 2], s_dir / "flair_synth.nii.gz", verbose=False)
                         
                         samples_saved += 1
+                        # Control-flow branch for conditional or iterative execution.
                         if samples_saved >= 8: break
             
             print(f"[SNAPSHOT] Saved {samples_saved} subjects to {snap_root}")
             torch.save(vae.state_dict(), Path(outdir) / f"vae_{stage_name}_ep{epoch}.pt")
 
+# Function: `main` implements a reusable processing step.
 def main(args):
     set_seed(args.seed)
     os.makedirs(args.outdir, exist_ok=True)
@@ -394,6 +468,7 @@ def main(args):
 
     print("[INIT] Loading Target (PDGM)...")
     pdgm_subs = []
+    # Control-flow branch for conditional or iterative execution.
     if args.fewshot and os.path.exists(args.fewshot):
         pdgm_subs = [l.strip() for l in open(args.fewshot) if l.strip()]
     
@@ -413,6 +488,8 @@ def main(args):
 
     print("--- Training Finished Successfully ---")
 
+# Run the CLI entry point when this file is executed directly.
+# Control-flow branch for conditional or iterative execution.
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument('--gbm_root', default='/home/j98my/Pre-Processing/prep/gbm_all')

@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/data.py
 
@@ -17,6 +21,7 @@ Key conventions used by the training code:
   - Masks are returned as float32 tensors shaped [1, D, H, W] with values in {0,1}
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import os
@@ -35,6 +40,7 @@ from ldm3d.io_nifti import load_vol_safe, load_mask_safe
 # ----------------------------
 # AUGMENTATIONS (MASK)
 # ----------------------------
+# Function: `augment_mask` implements a reusable processing step.
 def augment_mask(mask: torch.Tensor, p: float = 0.7) -> torch.Tensor:
     """
     Apply random augmentations to a binary mask.
@@ -56,7 +62,9 @@ def augment_mask(mask: torch.Tensor, p: float = 0.7) -> torch.Tensor:
       Augmented mask with the same shape and still binarized to {0,1}.
     """
     # With probability (1-p), return the input unchanged
+    # Control-flow branch for conditional or iterative execution.
     if random.random() > p:
+        # Return the computed value to the caller.
         return mask
 
     # Work on a local variable so the original reference isn't accidentally reused
@@ -64,6 +72,7 @@ def augment_mask(mask: torch.Tensor, p: float = 0.7) -> torch.Tensor:
 
     # random translation (±4 voxels)
     # This simulates small misalignments / annotation imprecision.
+    # Control-flow branch for conditional or iterative execution.
     if random.random() < 0.5:
         shifts = [random.randint(-4, 4) for _ in range(3)]
         # dims=(2,3,4) correspond to (D,H,W) because mask is [B,1,D,H,W]
@@ -72,6 +81,7 @@ def augment_mask(mask: torch.Tensor, p: float = 0.7) -> torch.Tensor:
     # random dilation / erosion
     # k controls morphological strength. Larger k -> bigger shape changes.
     k = random.choice([3, 5, 7])
+    # Control-flow branch for conditional or iterative execution.
     if random.random() < 0.5:
         # dilation:
         # max_pool3d on a binary mask expands foreground regions
@@ -82,9 +92,11 @@ def augment_mask(mask: torch.Tensor, p: float = 0.7) -> torch.Tensor:
         m = 1.0 - F.max_pool3d(1.0 - m, kernel_size=k, stride=1, padding=k // 2)
 
     # Re-binarize to avoid numerical artifacts from pooling
+    # Return the computed value to the caller.
     return (m > 0.5).float()
 
 
+# Function: `blur3d` implements a reusable processing step.
 def blur3d(x: torch.Tensor, k: int = 3) -> torch.Tensor:
     """
     Simple mean blur using avg pooling.
@@ -98,12 +110,14 @@ def blur3d(x: torch.Tensor, k: int = 3) -> torch.Tensor:
       - Often used for smoothing masks or control signals (depending on how train.py calls it).
       - Uses stride=1 with padding to preserve spatial size.
     """
+    # Return the computed value to the caller.
     return F.avg_pool3d(x, kernel_size=k, stride=1, padding=k // 2)
 
 
 # ----------------------------
 # DATASET
 # ----------------------------
+# Class definition: `VolFolder` encapsulates related model behavior.
 class VolFolder(Dataset):
     """
     A dataset that loads 3D MRI volumes (T1/T2/FLAIR) + a tumor mask from a folder structure.
@@ -130,31 +144,38 @@ class VolFolder(Dataset):
           - Masks: nearest interpolation (preserves discrete labels)
     """
 
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, root: str, subjects: Optional[List[str]] = None):
         # Root directory containing subject subfolders
         self.root = root
 
         # Discover all subject directories (immediate subfolders of root)
+        # Control-flow branch for conditional or iterative execution.
         try:
             full_subs = sorted(next(os.walk(root))[1])
+        # Control-flow branch for conditional or iterative execution.
         except StopIteration:
             # os.walk yields nothing if root is invalid/empty
             raise ValueError(f"Root dir {root} is empty or invalid.")
 
         # If a subject list is provided, use it; otherwise use all discovered subjects
         self.subs = subjects if subjects else full_subs
+        # Control-flow branch for conditional or iterative execution.
         if not self.subs:
             raise ValueError(f"No subjects found in {root}")
 
         print(f"[DATA] Found {len(self.subs)} subjects in {root}")
 
+    # Function: `__len__` implements a reusable processing step.
     def __len__(self) -> int:
         # Number of subject folders available
+        # Return the computed value to the caller.
         return len(self.subs)
 
     # ----------------------------
     # FILE DISCOVERY
     # ----------------------------
+    # Function: `_find_modality` implements a reusable processing step.
     def _find_modality(self, d: str, m: str) -> str:
         """
         Locate a modality file inside a subject directory.
@@ -169,19 +190,25 @@ class VolFolder(Dataset):
         """
         # Fast path: exact conventional filename
         p = os.path.join(d, f"{m}.nii.gz")
+        # Control-flow branch for conditional or iterative execution.
         if os.path.exists(p):
+            # Return the computed value to the caller.
             return p
 
         # Fallback: more flexible naming (e.g., "sub-001_T1w.nii.gz")
         cands = [
             f for f in os.listdir(d)
+            # Control-flow branch for conditional or iterative execution.
             if (m in f.lower()) and f.endswith(".nii.gz")
         ]
+        # Control-flow branch for conditional or iterative execution.
         if cands:
+            # Return the computed value to the caller.
             return os.path.join(d, cands[0])
 
         raise FileNotFoundError(f"Missing modality '{m}' in {d}")
 
+    # Function: `_find_mask` implements a reusable processing step.
     def _find_mask(self, d: str) -> str:
         """
         Locate the mask file inside a subject directory.
@@ -193,14 +220,18 @@ class VolFolder(Dataset):
         Raises:
           FileNotFoundError if not found.
         """
+        # Control-flow branch for conditional or iterative execution.
         for name in os.listdir(d):
+            # Control-flow branch for conditional or iterative execution.
             if "mask" in name.lower() and name.endswith(".nii.gz"):
+                # Return the computed value to the caller.
                 return os.path.join(d, name)
         raise FileNotFoundError(f"No mask file found in {d}")
 
     # ----------------------------
     # GETITEM
     # ----------------------------
+    # Function: `__getitem__` implements a reusable processing step.
     def __getitem__(self, i: int):
         """
         Load a single subject by index.
@@ -222,9 +253,11 @@ class VolFolder(Dataset):
         sid = self.subs[i]
         d = os.path.join(self.root, sid)
 
+        # Control-flow branch for conditional or iterative execution.
         try:
             # ---- Load three MRI modalities as [1,D,H,W] each
             imgs = []
+            # Control-flow branch for conditional or iterative execution.
             for m in ("t1", "t2", "flair"):
                 p = self._find_modality(d, m)
                 imgs.append(load_vol_safe(p))  # [1,D,H,W]
@@ -235,6 +268,7 @@ class VolFolder(Dataset):
 
             # ---- Enforce consistent cube size for training stability
             # Interpolate expects [N,C,D,H,W], so temporarily add batch dim.
+            # Control-flow branch for conditional or iterative execution.
             if tuple(x.shape[1:]) != (IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE):
                 x = x.unsqueeze(0)  # [1,3,D,H,W]
                 x = F.interpolate(
@@ -253,6 +287,7 @@ class VolFolder(Dataset):
             mask = torch.from_numpy(mask)
 
             # ---- Resize mask with nearest neighbor to preserve binary labels
+            # Control-flow branch for conditional or iterative execution.
             if tuple(mask.shape[1:]) != (IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE):
                 mask = mask.unsqueeze(0)  # [1,1,D,H,W]
                 mask = F.interpolate(
@@ -262,19 +297,23 @@ class VolFolder(Dataset):
                 )
                 mask = mask.squeeze(0)
 
+            # Return the computed value to the caller.
             return x, mask, sid
 
+        # Control-flow branch for conditional or iterative execution.
         except Exception as e:
             # If a subject fails to load, don't crash training; return a known dummy sample
             print(f"[WARN] Error loading {sid}: {e}")
             x = torch.zeros((3, IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE), dtype=torch.float32) - 1.0
             m = torch.zeros((1, IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE), dtype=torch.float32)
+            # Return the computed value to the caller.
             return x, m, sid
 
 
 # ----------------------------
 # UTILS
 # ----------------------------
+# Function: `load_subject_list` implements a reusable processing step.
 def load_subject_list(path: str) -> List[str]:
     """
     Read a newline-delimited subject list from `path`.
@@ -286,6 +325,9 @@ def load_subject_list(path: str) -> List[str]:
     Typical usage:
       - PDGM few-shot experiments where we only want a subset of subjects.
     """
+    # Control-flow branch for conditional or iterative execution.
     if not path or not os.path.exists(path):
+        # Return the computed value to the caller.
         return []
+    # Return the computed value to the caller.
     return [l.strip() for l in open(path) if l.strip()]

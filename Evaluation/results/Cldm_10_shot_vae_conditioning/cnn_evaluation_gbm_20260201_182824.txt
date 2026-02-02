@@ -1,0 +1,183 @@
+[INFO] Using specified domain: gbm
+[INFO] Using default mask root for gbm: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+Found 64 patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_SOURCE_ONLY/final_samples/gbm
+Using masks from: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+Domain: GBM
+[MAP] s00000 (pid=UPENN-GBM-00083_11) -> mask: UPENN-GBM-00083_11
+[MAP] s00001 (pid=UPENN-GBM-00489_11) -> mask: UPENN-GBM-00489_11
+[MAP] s00002 (pid=UPENN-GBM-00539_11) -> mask: UPENN-GBM-00539_11
+[MAP] s00003 (pid=UPENN-GBM-00010_11) -> mask: UPENN-GBM-00010_11
+[MAP] s00004 (pid=UPENN-GBM-00235_11) -> mask: UPENN-GBM-00235_11
+[MAP] s00005 (pid=UPENN-GBM-00474_11) -> mask: UPENN-GBM-00474_11
+[MAP] s00006 (pid=UPENN-GBM-00016_11) -> mask: UPENN-GBM-00016_11
+[MAP] s00007 (pid=UPENN-GBM-00498_11) -> mask: UPENN-GBM-00498_11
+[MAP] s00008 (pid=UPENN-GBM-00471_11) -> mask: UPENN-GBM-00471_11
+[MAP] s00009 (pid=UPENN-GBM-00330_11) -> mask: UPENN-GBM-00330_11
+[MAP] s00010 (pid=UPENN-GBM-00001_11) -> mask: UPENN-GBM-00001_11
+[MAP] s00011 (pid=UPENN-GBM-00593_11) -> mask: UPENN-GBM-00593_11
+[MAP] s00012 (pid=UPENN-GBM-00140_11) -> mask: UPENN-GBM-00140_11
+[MAP] s00013 (pid=UPENN-GBM-00569_11) -> mask: UPENN-GBM-00569_11
+[MAP] s00014 (pid=UPENN-GBM-00466_11) -> mask: UPENN-GBM-00466_11
+[MAP] s00015 (pid=UPENN-GBM-00515_11) -> mask: UPENN-GBM-00515_11
+[MAP] s00016 (pid=UPENN-GBM-00213_11) -> mask: UPENN-GBM-00213_11
+[MAP] s00017 (pid=UPENN-GBM-00375_11) -> mask: UPENN-GBM-00375_11
+[MAP] s00018 (pid=UPENN-GBM-00168_11) -> mask: UPENN-GBM-00168_11
+[MAP] s00019 (pid=UPENN-GBM-00583_11) -> mask: UPENN-GBM-00583_11
+[MAP] s00020 (pid=UPENN-GBM-00579_11) -> mask: UPENN-GBM-00579_11
+[MAP] s00021 (pid=UPENN-GBM-00448_11) -> mask: UPENN-GBM-00448_11
+[MAP] s00022 (pid=UPENN-GBM-00117_11) -> mask: UPENN-GBM-00117_11
+[MAP] s00023 (pid=UPENN-GBM-00157_11) -> mask: UPENN-GBM-00157_11
+[MAP] s00024 (pid=UPENN-GBM-00212_11) -> mask: UPENN-GBM-00212_11
+[MAP] s00025 (pid=UPENN-GBM-00043_11) -> mask: UPENN-GBM-00043_11
+[MAP] s00026 (pid=UPENN-GBM-00047_11) -> mask: UPENN-GBM-00047_11
+[MAP] s00027 (pid=UPENN-GBM-00149_11) -> mask: UPENN-GBM-00149_11
+[MAP] s00028 (pid=UPENN-GBM-00363_11) -> mask: UPENN-GBM-00363_11
+[MAP] s00029 (pid=UPENN-GBM-00163_11) -> mask: UPENN-GBM-00163_11
+[MAP] s00030 (pid=UPENN-GBM-00130_11) -> mask: UPENN-GBM-00130_11
+[MAP] s00031 (pid=UPENN-GBM-00133_11) -> mask: UPENN-GBM-00133_11
+[MAP] s00032 (pid=UPENN-GBM-00139_11) -> mask: UPENN-GBM-00139_11
+[MAP] s00033 (pid=UPENN-GBM-00160_11) -> mask: UPENN-GBM-00160_11
+[MAP] s00034 (pid=UPENN-GBM-00260_11) -> mask: UPENN-GBM-00260_11
+[MAP] s00035 (pid=UPENN-GBM-00278_11) -> mask: UPENN-GBM-00278_11
+[MAP] s00036 (pid=UPENN-GBM-00378_11) -> mask: UPENN-GBM-00378_11
+[MAP] s00037 (pid=UPENN-GBM-00502_11) -> mask: UPENN-GBM-00502_11
+[MAP] s00038 (pid=UPENN-GBM-00289_11) -> mask: UPENN-GBM-00289_11
+[MAP] s00039 (pid=UPENN-GBM-00351_11) -> mask: UPENN-GBM-00351_11
+[MAP] s00040 (pid=UPENN-GBM-00252_11) -> mask: UPENN-GBM-00252_11
+[MAP] s00041 (pid=UPENN-GBM-00575_11) -> mask: UPENN-GBM-00575_11
+[MAP] s00042 (pid=UPENN-GBM-00564_11) -> mask: UPENN-GBM-00564_11
+[MAP] s00043 (pid=UPENN-GBM-00306_11) -> mask: UPENN-GBM-00306_11
+[MAP] s00044 (pid=UPENN-GBM-00525_11) -> mask: UPENN-GBM-00525_11
+[MAP] s00045 (pid=UPENN-GBM-00422_11) -> mask: UPENN-GBM-00422_11
+[MAP] s00046 (pid=UPENN-GBM-00057_11) -> mask: UPENN-GBM-00057_11
+[MAP] s00047 (pid=UPENN-GBM-00496_11) -> mask: UPENN-GBM-00496_11
+[MAP] s00048 (pid=UPENN-GBM-00027_11) -> mask: UPENN-GBM-00027_11
+[MAP] s00049 (pid=UPENN-GBM-00003_11) -> mask: UPENN-GBM-00003_11
+[MAP] s00050 (pid=UPENN-GBM-00224_11) -> mask: UPENN-GBM-00224_11
+[MAP] s00051 (pid=UPENN-GBM-00217_11) -> mask: UPENN-GBM-00217_11
+[MAP] s00052 (pid=UPENN-GBM-00341_11) -> mask: UPENN-GBM-00341_11
+[MAP] s00053 (pid=UPENN-GBM-00434_11) -> mask: UPENN-GBM-00434_11
+[MAP] s00054 (pid=UPENN-GBM-00036_11) -> mask: UPENN-GBM-00036_11
+[MAP] s00055 (pid=UPENN-GBM-00285_11) -> mask: UPENN-GBM-00285_11
+[MAP] s00056 (pid=UPENN-GBM-00526_11) -> mask: UPENN-GBM-00526_11
+[MAP] s00057 (pid=UPENN-GBM-00277_11) -> mask: UPENN-GBM-00277_11
+[MAP] s00058 (pid=UPENN-GBM-00115_11) -> mask: UPENN-GBM-00115_11
+[MAP] s00059 (pid=UPENN-GBM-00196_11) -> mask: UPENN-GBM-00196_11
+[MAP] s00060 (pid=UPENN-GBM-00495_11) -> mask: UPENN-GBM-00495_11
+[MAP] s00061 (pid=UPENN-GBM-00493_11) -> mask: UPENN-GBM-00493_11
+[MAP] s00062 (pid=UPENN-GBM-00105_11) -> mask: UPENN-GBM-00105_11
+[MAP] s00063 (pid=UPENN-GBM-00309_11) -> mask: UPENN-GBM-00309_11
+Built index: 2950 positive slices, 4218 negative slices from 64 patients.
+Loading model from /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+
+======================================================================
+ENHANCED EVALUATION WITH DOMAIN GAP ANALYSIS
+======================================================================
+
+STEP 1: Domain Adaptation Analysis
+This separates domain gap from quality issues
+----------------------------------------------------------------------
+
+======================================================================
+DOMAIN ADAPTATION ANALYSIS
+======================================================================
+
+Adaptation set: 10 samples
+Test set: 7158 samples
+
+1. Evaluating WITHOUT adaptation...
+   AUC (no adaptation): 0.9485
+
+2. Adapting model on 10 samples...
+   Epoch 2/5, Loss: 0.8177
+   Epoch 4/5, Loss: 1.4544
+
+3. Evaluating WITH adaptation...
+   AUC (with adaptation): 0.9429
+
+======================================================================
+DOMAIN GAP ANALYSIS
+======================================================================
+AUC without adaptation: 0.9485
+AUC with adaptation:    0.9429
+Domain gap effect:      -0.0056
+
+Interpretation:
+  Small domain gap - performance is mostly limited by
+  intrinsic quality, not distribution shift.
+======================================================================
+
+STEP 2: Bootstrap Confidence Intervals
+This provides robust uncertainty estimates
+----------------------------------------------------------------------
+
+======================================================================
+BOOTSTRAP CONFIDENCE INTERVALS (1000 iterations)
+======================================================================
+
+Bootstrap Results:
+  Mean:      0.9488
+  Std Dev:   0.0022
+  Median:    0.9489
+  95% CI:    [0.9441, 0.9531]
+  Range:     [0.9416, 0.9552]
+======================================================================
+
+STEP 3: Stratified Evaluation
+This shows performance breakdown by subgroups
+----------------------------------------------------------------------
+Checking Mode collapse
+Average pairwise similarity: 0.9860
+Max similarity: 0.9990
+Min similarity: 0.8992
+⚠️  HIGH MODE COLLAPSE - Samples are too similar!
+
+======================================================================
+STRATIFIED EVALUATION
+======================================================================
+
+Stratified Metrics:
+  Overall AUC:                 0.9486
+  Patient-level AUC:           0.9532 ± 0.0562
+  Mean prob on positive:       0.8966
+  Median prob on positive:     0.9996
+  Mean prob on negative:       0.2234
+  Median prob on negative:     0.0386
+  N patients with both labels: 64
+======================================================================
+
+
+======================================================================
+FINAL SUMMARY REPORT
+======================================================================
+
+DOMAIN: GBM
+Synthetic samples: 64
+Total slices evaluated: 7168
+
+1. BASIC PERFORMANCE:
+   AUC: 0.9488 ± 0.0022
+   95% CI: [0.9441, 0.9531]
+
+2. DOMAIN GAP EFFECT:
+   AUC without adaptation: 0.9485
+   AUC with adaptation:    0.9429
+   Domain gap:             -0.0056
+   Interpretation: 0.006 of potential improvement
+                   is achievable with 10 samples
+
+3. PATIENT-LEVEL PERFORMANCE:
+   Patient AUC: 0.9532 ± 0.0562
+
+======================================================================
+RECOMMENDATIONS FOR PAPER:
+======================================================================
+Report Accuracy as: {'accuracy': 0.8440290178571429, 'balanced_accuracy': 0.8545309448610073, 'auc': 0.9486038447010794, 'sensitivity': 0.9138983050847458, 'specificity': 0.7951635846372689, 'f1': 0.8282642089093702, 'tp': 2696, 'tn': 3354, 'fp': 864, 'fn': 254}
+Report AUC as: 0.949 ± 0.002
+               [95% CI: 0.944, 0.953]
+
+Note that 0.006 AUC points are due to domain
+shift rather than quality, as evidenced by adaptation experiment.
+======================================================================
+
+Results saved to: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_SOURCE_ONLY/final_samples/gbm/enhanced_evaluation_results.json

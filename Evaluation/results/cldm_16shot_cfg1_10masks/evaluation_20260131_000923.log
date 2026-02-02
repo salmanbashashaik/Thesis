@@ -1,0 +1,132 @@
+[2026-01-31 00:09:23] ============================================================
+[2026-01-31 00:09:23] COMPREHENSIVE SYNTHETIC IMAGE EVALUATION
+[2026-01-31 00:09:23] ============================================================
+[2026-01-31 00:09:23] 
+[2026-01-31 00:09:23] Configuration:
+[2026-01-31 00:09:23]   Domains to evaluate:
+[2026-01-31 00:09:23]     - GBM
+[2026-01-31 00:09:23]     - PDGM
+[2026-01-31 00:09:23] 
+[2026-01-31 00:09:23]   GBM Paths:
+[2026-01-31 00:09:23]     Synthetic: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm
+[2026-01-31 00:09:23]     Original:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+[2026-01-31 00:09:23]   PDGM Paths:
+[2026-01-31 00:09:23]     Synthetic: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm
+[2026-01-31 00:09:23]     Original:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+[2026-01-31 00:09:23] 
+[2026-01-31 00:09:23]   Mask root:          
+[2026-01-31 00:09:23]   CNN model:          /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+[2026-01-31 00:09:23]   Output directory:   /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1
+[2026-01-31 00:09:23]   Image size:         224
+[2026-01-31 00:09:23]   Batch size:         32
+[2026-01-31 00:09:23]   Device:             cuda
+[2026-01-31 00:09:23]   Use resized:        Yes
+[2026-01-31 00:09:23] 
+[2026-01-31 00:09:23] ============================================================
+[2026-01-31 00:09:23] STEP 1: CNN Transferability Evaluation
+[2026-01-31 00:09:23] ============================================================
+[2026-01-31 00:09:23] 
+[2026-01-31 00:09:23] Evaluating GBM domain...
+[2026-01-31 00:09:23] Command: python3 /home/j98my/Evaluation/test_using_cnn_cv_DS.py             --synth_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm             --model_path /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --n_adapt 10             --n_bootstrap 1000             --domain gbm             --use_resized
+[2026-01-31 00:09:23] 
+[2026-01-31 00:11:56] ✅ GBM CNN evaluation completed
+[2026-01-31 00:11:56]   GBM AUC: 0.834, Domain gap: -0.0015
+[2026-01-31 00:11:56] 
+[2026-01-31 00:11:56] Evaluating PDGM domain...
+[2026-01-31 00:11:56] Command: python3 /home/j98my/Evaluation/test_using_cnn_cv_DS.py             --synth_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm             --model_path /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --n_adapt 10             --n_bootstrap 1000             --domain pdgm             --use_resized
+[2026-01-31 00:11:56] 
+[2026-01-31 00:14:31] ✅ PDGM CNN evaluation completed
+[2026-01-31 00:14:31]   PDGM AUC: 0.940, Domain gap: -0.0013
+[2026-01-31 00:14:31] 
+[2026-01-31 00:14:31] ============================================================
+[2026-01-31 00:14:31] STEP 2: FID/SSIM Perceptual Metrics
+[2026-01-31 00:14:31] ============================================================
+[2026-01-31 00:14:31] 
+[2026-01-31 00:14:31] Running FID/SSIM evaluation...
+[2026-01-31 00:14:31] Output will be saved to: /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/fid_ssim_20260131_000923.txt
+[2026-01-31 00:14:31] 
+[2026-01-31 00:14:31] Command: python3 /home/j98my/Evaluation/test_using_fid_ssim.py             --synth_gbm_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm             --original_gbm_root /home/j98my/Pre-Processing/prep/gbm_all_aligned             --synth_pdgm_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm             --original_pdgm_root /home/j98my/Pre-Processing/prep/pdgm_target_aligned             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --use_resized
+[2026-01-31 00:14:31] 
+[2026-01-31 00:16:02] ✅ FID/SSIM evaluation completed successfully
+[2026-01-31 00:16:02] Results saved to: /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/fid_ssim_20260131_000923.txt
+[2026-01-31 00:16:02]   GBM  - SSIM: 0.707661, FID: 43.4667
+[2026-01-31 00:16:02]   PDGM - SSIM: 0.717011, FID: 48.8039
+[2026-01-31 00:16:02] 
+[2026-01-31 00:16:02] ============================================================
+[2026-01-31 00:16:02] STEP 3: Generating Summary Report
+[2026-01-31 00:16:02] ============================================================
+[2026-01-31 00:16:02] 
+========================================================================
+SYNTHETIC IMAGE EVALUATION SUMMARY
+========================================================================
+
+Evaluation Date: Sat 31 Jan 2026 12:16:02 AM AST
+
+------------------------------------------------------------------------
+CONFIGURATION
+------------------------------------------------------------------------
+Domains Evaluated:
+  GBM:
+    Synthetic Root: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm
+    Original Root:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+  PDGM:
+    Synthetic Root: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm
+    Original Root:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+
+CNN Model:           /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+Output Directory:    /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1
+
+Image Size:          224
+Batch Size:          32
+Device:              cuda
+Use Resized:         Yes
+
+------------------------------------------------------------------------
+CNN TRANSFERABILITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  AUC (no adaptation):     0.834
+  Domain Gap:              -0.0015
+
+PDGM Domain:
+  AUC (no adaptation):     0.940
+  Domain Gap:              -0.0013
+
+Interpretation:
+  Domain gap indicates how much performance can be recovered with adaptation.
+
+------------------------------------------------------------------------
+PERCEPTUAL QUALITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  SSIM (Higher is better):  0.707661
+  FID  (Lower is better):   43.4667
+
+PDGM Domain:
+  SSIM (Higher is better):  0.717011
+  FID  (Lower is better):   48.8039
+
+Interpretation:
+  SSIM measures structural similarity (0-1 scale)
+  FID measures distribution distance (lower is better)
+
+------------------------------------------------------------------------
+FILES GENERATED
+------------------------------------------------------------------------
+This summary:      /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/EVALUATION_SUMMARY_20260131_000923.txt
+Master log:        /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/evaluation_20260131_000923.log
+GBM CNN results:   /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/cnn_evaluation_gbm_20260131_000923.txt
+GBM CNN JSON:      /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm/enhanced_evaluation_results.json
+PDGM CNN results:  /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/cnn_evaluation_pdgm_20260131_000923.txt
+PDGM CNN JSON:     /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm/enhanced_evaluation_results.json
+FID/SSIM results:  /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/fid_ssim_20260131_000923.txt
+
+========================================================================
+[2026-01-31 00:16:02] 
+[2026-01-31 00:16:02] ============================================================
+[2026-01-31 00:16:02] ✅ EVALUATION PIPELINE COMPLETED
+[2026-01-31 00:16:02] ============================================================
+[2026-01-31 00:16:02] 
+[2026-01-31 00:16:02] Summary report saved to: /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/EVALUATION_SUMMARY_20260131_000923.txt
+[2026-01-31 00:16:02] Full log saved to: /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/evaluation_20260131_000923.log
+[2026-01-31 00:16:02] 

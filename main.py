@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/main.py
 
@@ -16,6 +20,7 @@ Important concept:
     that produced those latents. If the VAE weights change, latent stats should be recomputed.
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import os
@@ -39,15 +44,18 @@ from ldm3d.diffusion import LatentDDPM
 # - maybe_load_latent_stats: read cached stats from outdir/latent_stats.pt if available
 # - estimate_latent_stats: compute mean/std from a dataloader + current VAE encoder
 # - recompute_and_save_latent_stats: convenience wrapper that builds its own GBM dataloader
+# Import dependencies used by this module.
 from ldm3d.latent_stats import maybe_load_latent_stats, estimate_latent_stats, recompute_and_save_latent_stats
 
 # Training orchestration:
 # - train_vae_stage: VAE training loop for a given domain ("src"/"tgt")
 # - train_ldm_stage: latent diffusion training loop for a given domain ("ldm_src"/"ldm_tgt")
 # - final_sampling_dump: produces final samples from trained diffusion model
+# Import dependencies used by this module.
 from ldm3d.train import train_vae_stage, train_ldm_stage, final_sampling_dump
 
 
+# Function: `build_argparser` implements a reusable processing step.
 def build_argparser() -> argparse.ArgumentParser:
     """
     Define all CLI arguments for data paths, training hyperparameters, model sizes,
@@ -100,7 +108,7 @@ def build_argparser() -> argparse.ArgumentParser:
     # VAE loss weights
     # ----------------------------
     # KL regularization weight (latent prior pressure)
-    ap.add_argument("--kl_w", type=float, default=1e-4)
+    ap.add_argument("--kl_w", type=float, default=0.01)
     # Reconstruction weight (pixel/voxel fidelity)
     ap.add_argument("--rec_w", type=float, default=1.0)
 
@@ -174,7 +182,7 @@ def build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--cond_drop_p", type=float, default=0.1)
 
     # Guidance scale for sampling (higher => stronger conditioning, but too high can distort)
-    ap.add_argument("--guidance_scale", type=float, default=4.0)
+    ap.add_argument("--guidance_scale", type=float, default=1.5)
 
     # Probability of applying mask augmentations (used inside train.py)
     ap.add_argument("--mask_aug_p", type=float, default=0.7)
@@ -196,9 +204,42 @@ def build_argparser() -> argparse.ArgumentParser:
     # Probability of applying mask blur augmentation (used inside train.py)
     ap.add_argument("--mask_blur_p", type=float, default=0.3)
 
+    # Sampling controls (SSIM-critical)
+    ap.add_argument("--sample_steps", type=int, default=250,
+                    help="Number of reverse steps for sampling (more steps -> higher SSIM, slower).")
+    ap.add_argument("--sampler", type=str, default="ddim", choices=["ddpm", "ddim"],
+                    help="DDIM is typically more deterministic and SSIM-friendly.")
+    ap.add_argument("--ddim_eta", type=float, default=0.0,
+                    help="DDIM stochasticity. 0.0 = deterministic (best for SSIM).")
+    ap.add_argument("--use_ema_for_sampling", action="store_true",
+                    help="Force EMA weights during sampling (usually improves SSIM).")
+
+    ap.add_argument("--ctrl_mask_w", type=float, default=1.0)
+    ap.add_argument("--ctrl_edge_w", type=float, default=0.3)
+    ap.add_argument("--ctrl_dist_w", type=float, default=0.7)
+
+    ap.add_argument("--noise_mult", type=float, default=1.0,
+                help="Global multiplier on sampling noise. <1 increases SSIM, may affect FID slightly.")
+    ap.add_argument("--noise_end_frac", type=float, default=0.2,
+                help="Last fraction of steps where noise is linearly annealed toward 0 for higher SSIM.")
+
+    ap.add_argument("--cfg_null_cond", action="store_true",
+                help="Use None mask/control for unconditional pass instead of zeros.")
+    
+    ap.add_argument("--x0_clip", type=float, default=3.0,
+                help="Clip value for x0 prediction. Set <=0 to disable.")
+
+    ap.add_argument("--guidance_rescale", type=float)
+    ap.add_argument("--grad_clip", type=float, default=1.0)
+    ap.add_argument("--warmup_steps", type=int, default=500)
+    ap.add_argument("--min_snr_gamma", type=float, default=5.0)
+    ap.add_argument("--edge_loss_w", type=float, default=0.1)
+                
+    # Return the computed value to the caller.
     return ap
 
 
+# Function: `maybe_load_ckpt` implements a reusable processing step.
 def maybe_load_ckpt(model: torch.nn.Module, ckpt_path: str, name: str) -> None:
     """
     Load a standard PyTorch state_dict checkpoint into `model` if `ckpt_path` is provided.
@@ -206,9 +247,12 @@ def maybe_load_ckpt(model: torch.nn.Module, ckpt_path: str, name: str) -> None:
     - strict=True ensures architecture matches exactly (safer, but will error if mismatch).
     - map_location="cpu" makes loading independent of GPU availability.
     """
+    # Control-flow branch for conditional or iterative execution.
     if not ckpt_path:
+        # Return the computed value to the caller.
         return
     p = Path(ckpt_path)
+    # Control-flow branch for conditional or iterative execution.
     if not p.exists():
         raise FileNotFoundError(f"{name} ckpt not found: {ckpt_path}")
     sd = torch.load(str(p), map_location="cpu")
@@ -216,6 +260,7 @@ def maybe_load_ckpt(model: torch.nn.Module, ckpt_path: str, name: str) -> None:
     print(f"[LOAD] Loaded {name} ckpt: {ckpt_path}")
 
 
+# Function: `maybe_load_ema` implements a reusable processing step.
 def maybe_load_ema(ema: EMA, ema_path: str, model: torch.nn.Module) -> None:
     """
     Load EMA shadow weights and ensure they are placed on the same device/dtype
@@ -225,10 +270,13 @@ def maybe_load_ema(ema: EMA, ema_path: str, model: torch.nn.Module) -> None:
       - EMA shadows are often saved on CPU.
       - During training/sampling, applying EMA requires tensors to match device/dtype.
     """
+    # Control-flow branch for conditional or iterative execution.
     if not ema_path:
+        # Return the computed value to the caller.
         return
 
     p = Path(ema_path)
+    # Control-flow branch for conditional or iterative execution.
     if not p.exists():
         raise FileNotFoundError(f"EMA ckpt not found: {ema_path}")
 
@@ -238,9 +286,12 @@ def maybe_load_ema(ema: EMA, ema_path: str, model: torch.nn.Module) -> None:
     ema.shadow = shadow
 
     # Move each shadow tensor to match the corresponding model parameter's device/dtype
+    # Control-flow branch for conditional or iterative execution.
     for name, param in model.named_parameters():
+        # Control-flow branch for conditional or iterative execution.
         if not param.requires_grad:
             continue
+        # Control-flow branch for conditional or iterative execution.
         if name in ema.shadow:
             ema.shadow[name] = ema.shadow[name].to(
                 device=param.device,
@@ -250,6 +301,7 @@ def maybe_load_ema(ema: EMA, ema_path: str, model: torch.nn.Module) -> None:
     print(f"[LOAD] Loaded EMA shadow (moved to {next(model.parameters()).device}): {ema_path}")
 
 
+# Function: `main` implements a reusable processing step.
 def main(args: argparse.Namespace) -> None:
     """
     Orchestrate the full experiment:
@@ -293,10 +345,17 @@ def main(args: argparse.Namespace) -> None:
 
     # If a fewshot list exists, restrict to those subjects; otherwise load all under pdgm_root.
     pdgm_ds = VolFolder(args.pdgm_root, subjects=pdgm_subs if (args.fewshot and pdgm_subs) else None)
+    # Import dependencies used by this module.
+    import time, torch
+
+    g = torch.Generator()
+    g.manual_seed(int(time.time() * 1000) % 2**31)
+
     pdgm_dl = DataLoader(
         pdgm_ds,
         batch_size=args.batch_size,
         shuffle=True,
+        generator=g,
         num_workers=args.num_workers,
         pin_memory=True,
         persistent_workers=(args.num_workers > 0),
@@ -316,23 +375,23 @@ def main(args: argparse.Namespace) -> None:
     
     #
     # after loading VAE (and before sampling):
-    if args.recompute_latent_stats:
-        stats = recompute_and_save_latent_stats(
-            outdir=args.outdir,
-            gbm_root=args.gbm_root,
-            vae=vae,
-            batches=args.latent_stat_batches,
-            batch_size=args.batch_size,
-            num_workers=args.num_workers,
-            use_posterior_noise=args.use_posterior_noise,
-        )
-    else:
-        stats = torch.load(args.latent_stats, map_location="cpu") if args.latent_stats else \
-                torch.load(Path(args.outdir) / "latent_stats.pt", map_location="cpu")
+    # if args.recompute_latent_stats:
+    #     stats = recompute_and_save_latent_stats(
+    #         outdir=args.outdir,
+    #         gbm_root=args.gbm_root,
+    #         vae=vae,
+    #         batches=args.latent_stat_batches,
+    #         batch_size=args.batch_size,
+    #         num_workers=args.num_workers,
+    #         use_posterior_noise=args.use_posterior_noise,
+    #     )
+    # else:
+    #     stats = torch.load(args.latent_stats, map_location="cpu") if args.latent_stats else \
+    #             torch.load(Path(args.outdir) / "latent_stats.pt", map_location="cpu")
 
     # Move stats tensors to DEVICE for convenience (training code may expect GPU tensors)
-    lat_mean = stats["mean"].to(DEVICE)
-    lat_std  = stats["std"].to(DEVICE)
+    # lat_mean = stats["mean"].to(DEVICE)
+    # lat_std  = stats["std"].to(DEVICE)
 
     # UNet3DLatentCond:
     # - operates in latent space (channels = z_channels)
@@ -393,12 +452,14 @@ def main(args: argparse.Namespace) -> None:
                     l2_w=args.vae_l2_w,)
 
     # Stage "tgt": optional fine-tuning on PDGM few-shot for target-domain adaptation.
+    # Control-flow branch for conditional or iterative execution.
     if args.epochs_vae_tgt > 0:
         train_vae_stage("tgt", pdgm_dl, vae, opt_vae, args.epochs_vae_tgt, args.outdir,
                         kl_w=args.kl_w, rec_w=args.rec_w, kl_warmup_frac=args.kl_warmup_frac,
                         l2_w=args.vae_l2_w,)
 
     # Save VAE checkpoint only if we actually trained it (epochs > 0)
+    # Control-flow branch for conditional or iterative execution.
     if args.epochs_vae_src > 0 or args.epochs_vae_tgt > 0:
         torch.save(vae.state_dict(), Path(args.outdir) / "vae_final.pt")
 
@@ -408,7 +469,28 @@ def main(args: argparse.Namespace) -> None:
     # This is the "real" latent stats block used for diffusion training below.
     # It tries to load cached stats unless forcing recompute; otherwise estimates from GBM via the current VAE.
     stats = None if args.force_recompute_latent_stats else maybe_load_latent_stats(args.outdir)
+
+    # Control-flow branch for conditional or iterative execution.
+    if stats is not None:
+        cached_flag = stats.get("use_posterior_noise", None)
+        # Control-flow branch for conditional or iterative execution.
+        if cached_flag is None:
+            raise RuntimeError(
+                "[LATENT_STATS] Cached stats missing 'use_posterior_noise'. "
+                "Recompute once with the current code so future runs are safe."
+            )
+        # Control-flow branch for conditional or iterative execution.
+        if bool(cached_flag) != bool(args.use_posterior_noise):
+            raise RuntimeError(
+                f"[LATENT_STATS MISMATCH] cached use_posterior_noise={cached_flag} "
+                f"but run uses --use_posterior_noise={args.use_posterior_noise}. "
+                f"Fix: either remove --use_posterior_noise OR recompute stats with "
+                f"--force_recompute_latent_stats."
+            )
+
+    # Control-flow branch for conditional or iterative execution.
     if stats is None:
+        # Control-flow branch for conditional or iterative execution.
         if args.force_recompute_latent_stats:
             print("[LDM] Forcing latent stat recomputation.")
         stats = estimate_latent_stats(
@@ -422,8 +504,8 @@ def main(args: argparse.Namespace) -> None:
 
     # Note: these are left on CPU here (estimate_latent_stats returns CPU tensors).
     # Training code may move them as needed.
-    lat_mean = stats["mean"]
-    lat_std = stats["std"]
+    lat_mean = stats["mean"].to(DEVICE)
+    lat_std = stats["std"].to(DEVICE)
 
     # ----------------------------
     # 8) Diffusion Training Stages (LDM)
@@ -435,6 +517,7 @@ def main(args: argparse.Namespace) -> None:
     )
 
     # Stage "ldm_tgt": optional adaptation on PDGM few-shot latents (data-scarce).
+    # Control-flow branch for conditional or iterative execution.
     if args.epochs_ldm_tgt > 0:
         train_ldm_stage(
             "ldm_tgt", pdgm_dl, vae, unet, ema, ddpm, opt_unet,
@@ -468,6 +551,8 @@ def main(args: argparse.Namespace) -> None:
     print("--- DONE ---")
 
 
+# Run the CLI entry point when this file is executed directly.
+# Control-flow branch for conditional or iterative execution.
 if __name__ == "__main__":
     # Standard CLI entry:
     #   - parse args

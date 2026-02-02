@@ -1,0 +1,135 @@
+[INFO] Using specified domain: pdgm
+[INFO] Using default mask root for pdgm: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+Found 16 patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm
+Using masks from: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+Domain: PDGM
+[MAP] s00000 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00001 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00002 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00003 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00004 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00005 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00006 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00007 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00008 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00009 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00010 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00011 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00012 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00013 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00014 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00015 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+Built index: 678 positive slices, 1114 negative slices from 16 patients.
+Loading model from /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+
+======================================================================
+ENHANCED EVALUATION WITH DOMAIN GAP ANALYSIS
+======================================================================
+
+STEP 1: Domain Adaptation Analysis
+This separates domain gap from quality issues
+----------------------------------------------------------------------
+
+======================================================================
+DOMAIN ADAPTATION ANALYSIS
+======================================================================
+
+Adaptation set: 10 samples
+Test set: 1782 samples
+
+1. Evaluating WITHOUT adaptation...
+   AUC (no adaptation): 0.9402
+
+2. Adapting model on 10 samples...
+   Epoch 2/5, Loss: 0.6241
+   Epoch 4/5, Loss: 1.2594
+
+3. Evaluating WITH adaptation...
+   AUC (with adaptation): 0.9389
+
+======================================================================
+DOMAIN GAP ANALYSIS
+======================================================================
+AUC without adaptation: 0.9402
+AUC with adaptation:    0.9389
+Domain gap effect:      -0.0013
+
+Interpretation:
+  Small domain gap - performance is mostly limited by
+  intrinsic quality, not distribution shift.
+======================================================================
+
+STEP 2: Bootstrap Confidence Intervals
+This provides robust uncertainty estimates
+----------------------------------------------------------------------
+
+======================================================================
+BOOTSTRAP CONFIDENCE INTERVALS (1000 iterations)
+======================================================================
+
+Bootstrap Results:
+  Mean:      0.9400
+  Std Dev:   0.0054
+  Median:    0.9401
+  95% CI:    [0.9290, 0.9501]
+  Range:     [0.9158, 0.9546]
+======================================================================
+
+STEP 3: Stratified Evaluation
+This shows performance breakdown by subgroups
+----------------------------------------------------------------------
+Checking Mode collapse
+Average pairwise similarity: 0.9916
+Max similarity: 0.9993
+Min similarity: 0.9514
+⚠️  HIGH MODE COLLAPSE - Samples are too similar!
+
+======================================================================
+STRATIFIED EVALUATION
+======================================================================
+
+Stratified Metrics:
+  Overall AUC:                 0.9400
+  Patient-level AUC:           0.9542 ± 0.0465
+  Mean prob on positive:       0.7954
+  Median prob on positive:     0.9999
+  Mean prob on negative:       0.1015
+  Median prob on negative:     0.0185
+  N patients with both labels: 16
+======================================================================
+
+
+======================================================================
+FINAL SUMMARY REPORT
+======================================================================
+
+DOMAIN: PDGM
+Synthetic samples: 16
+Total slices evaluated: 1792
+
+1. BASIC PERFORMANCE:
+   AUC: 0.9400 ± 0.0054
+   95% CI: [0.9290, 0.9501]
+
+2. DOMAIN GAP EFFECT:
+   AUC without adaptation: 0.9402
+   AUC with adaptation:    0.9389
+   Domain gap:             -0.0013
+   Interpretation: 0.001 of potential improvement
+                   is achievable with 10 samples
+
+3. PATIENT-LEVEL PERFORMANCE:
+   Patient AUC: 0.9542 ± 0.0465
+
+======================================================================
+RECOMMENDATIONS FOR PAPER:
+======================================================================
+Report Accuracy as: {'accuracy': 0.8828125, 'balanced_accuracy': 0.861007398463111, 'auc': 0.9400304782785995, 'sensitivity': 0.7713864306784661, 'specificity': 0.9506283662477558, 'f1': 0.8328025477707006, 'tp': 523, 'tn': 1059, 'fp': 55, 'fn': 155}
+Report AUC as: 0.940 ± 0.005
+               [95% CI: 0.929, 0.950]
+
+Note that 0.001 AUC points are due to domain
+shift rather than quality, as evidenced by adaptation experiment.
+======================================================================
+
+Results saved to: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm/enhanced_evaluation_results.json

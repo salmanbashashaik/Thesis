@@ -1,0 +1,173 @@
+
+======================================================================
+FID/SSIM EVALUATION
+======================================================================
+
+Domains to evaluate:
+  ✓ GBM
+  ✓ PDGM
+
+
+--- Evaluating Dataset ---
+  Synth:    /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/final_samples/gbm
+  Original: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+----------------------------
+Found 64 synthetic patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/final_samples/gbm
+[MAP] s00000 (sid=UPENN-GBM-00131_11) -> UPENN-GBM-00131_11
+[MAP] s00001 (sid=UPENN-GBM-00412_11) -> UPENN-GBM-00412_11
+[MAP] s00002 (sid=UPENN-GBM-00439_11) -> UPENN-GBM-00439_11
+[MAP] s00003 (sid=UPENN-GBM-00487_11) -> UPENN-GBM-00487_11
+[MAP] s00004 (sid=UPENN-GBM-00444_11) -> UPENN-GBM-00444_11
+[MAP] s00005 (sid=UPENN-GBM-00205_11) -> UPENN-GBM-00205_11
+[MAP] s00006 (sid=UPENN-GBM-00254_11) -> UPENN-GBM-00254_11
+[MAP] s00007 (sid=UPENN-GBM-00313_11) -> UPENN-GBM-00313_11
+[MAP] s00008 (sid=UPENN-GBM-00319_11) -> UPENN-GBM-00319_11
+[MAP] s00009 (sid=UPENN-GBM-00281_11) -> UPENN-GBM-00281_11
+[MAP] s00010 (sid=UPENN-GBM-00480_11) -> UPENN-GBM-00480_11
+[MAP] s00011 (sid=UPENN-GBM-00013_11) -> UPENN-GBM-00013_11
+[MAP] s00012 (sid=UPENN-GBM-00573_11) -> UPENN-GBM-00573_11
+[MAP] s00013 (sid=UPENN-GBM-00602_11) -> UPENN-GBM-00602_11
+[MAP] s00014 (sid=UPENN-GBM-00016_11) -> UPENN-GBM-00016_11
+[MAP] s00015 (sid=UPENN-GBM-00317_11) -> UPENN-GBM-00317_11
+[MAP] s00016 (sid=UPENN-GBM-00341_11) -> UPENN-GBM-00341_11
+[MAP] s00017 (sid=UPENN-GBM-00324_11) -> UPENN-GBM-00324_11
+[MAP] s00018 (sid=UPENN-GBM-00403_11) -> UPENN-GBM-00403_11
+[MAP] s00019 (sid=UPENN-GBM-00030_11) -> UPENN-GBM-00030_11
+[MAP] s00020 (sid=UPENN-GBM-00389_11) -> UPENN-GBM-00389_11
+[MAP] s00021 (sid=UPENN-GBM-00329_11) -> UPENN-GBM-00329_11
+[MAP] s00022 (sid=UPENN-GBM-00558_11) -> UPENN-GBM-00558_11
+[MAP] s00023 (sid=UPENN-GBM-00430_11) -> UPENN-GBM-00430_11
+[MAP] s00024 (sid=UPENN-GBM-00332_11) -> UPENN-GBM-00332_11
+[MAP] s00025 (sid=UPENN-GBM-00008_11) -> UPENN-GBM-00008_11
+[MAP] s00026 (sid=UPENN-GBM-00147_11) -> UPENN-GBM-00147_11
+[MAP] s00027 (sid=UPENN-GBM-00367_11) -> UPENN-GBM-00367_11
+[MAP] s00028 (sid=UPENN-GBM-00467_11) -> UPENN-GBM-00467_11
+[MAP] s00029 (sid=UPENN-GBM-00219_11) -> UPENN-GBM-00219_11
+[MAP] s00030 (sid=UPENN-GBM-00579_11) -> UPENN-GBM-00579_11
+[MAP] s00031 (sid=UPENN-GBM-00172_11) -> UPENN-GBM-00172_11
+[MAP] s00032 (sid=UPENN-GBM-00392_11) -> UPENN-GBM-00392_11
+[MAP] s00033 (sid=UPENN-GBM-00514_11) -> UPENN-GBM-00514_11
+[MAP] s00034 (sid=UPENN-GBM-00352_11) -> UPENN-GBM-00352_11
+[MAP] s00035 (sid=UPENN-GBM-00116_11) -> UPENN-GBM-00116_11
+[MAP] s00036 (sid=UPENN-GBM-00351_11) -> UPENN-GBM-00351_11
+[MAP] s00037 (sid=UPENN-GBM-00362_11) -> UPENN-GBM-00362_11
+[MAP] s00038 (sid=UPENN-GBM-00193_11) -> UPENN-GBM-00193_11
+[MAP] s00039 (sid=UPENN-GBM-00107_11) -> UPENN-GBM-00107_11
+[MAP] s00040 (sid=UPENN-GBM-00315_11) -> UPENN-GBM-00315_11
+[MAP] s00041 (sid=UPENN-GBM-00213_11) -> UPENN-GBM-00213_11
+[MAP] s00042 (sid=UPENN-GBM-00569_11) -> UPENN-GBM-00569_11
+[MAP] s00043 (sid=UPENN-GBM-00425_11) -> UPENN-GBM-00425_11
+[MAP] s00044 (sid=UPENN-GBM-00378_11) -> UPENN-GBM-00378_11
+[MAP] s00045 (sid=UPENN-GBM-00440_11) -> UPENN-GBM-00440_11
+[MAP] s00046 (sid=UPENN-GBM-00048_11) -> UPENN-GBM-00048_11
+[MAP] s00047 (sid=UPENN-GBM-00232_11) -> UPENN-GBM-00232_11
+[MAP] s00048 (sid=UPENN-GBM-00411_11) -> UPENN-GBM-00411_11
+[MAP] s00049 (sid=UPENN-GBM-00169_11) -> UPENN-GBM-00169_11
+[MAP] s00050 (sid=UPENN-GBM-00166_11) -> UPENN-GBM-00166_11
+[MAP] s00051 (sid=UPENN-GBM-00279_11) -> UPENN-GBM-00279_11
+[MAP] s00052 (sid=UPENN-GBM-00149_11) -> UPENN-GBM-00149_11
+[MAP] s00053 (sid=UPENN-GBM-00381_11) -> UPENN-GBM-00381_11
+[MAP] s00054 (sid=UPENN-GBM-00089_11) -> UPENN-GBM-00089_11
+[MAP] s00055 (sid=UPENN-GBM-00221_11) -> UPENN-GBM-00221_11
+[MAP] s00056 (sid=UPENN-GBM-00400_11) -> UPENN-GBM-00400_11
+[MAP] s00057 (sid=UPENN-GBM-00369_11) -> UPENN-GBM-00369_11
+[MAP] s00058 (sid=UPENN-GBM-00398_11) -> UPENN-GBM-00398_11
+[MAP] s00059 (sid=UPENN-GBM-00377_11) -> UPENN-GBM-00377_11
+[MAP] s00060 (sid=UPENN-GBM-00391_11) -> UPENN-GBM-00391_11
+[MAP] s00061 (sid=UPENN-GBM-00383_11) -> UPENN-GBM-00383_11
+[MAP] s00062 (sid=UPENN-GBM-00150_11) -> UPENN-GBM-00150_11
+[MAP] s00063 (sid=UPENN-GBM-00280_11) -> UPENN-GBM-00280_11
+[MAP] Mapped 64/64 synth folders (unmapped=0, missing_files=0).
+Building slice index (depth=min(orig,synth))...
+Built index: 7168 total slices from 64 mapped patients.
+Running evaluation on 7168 slices...
+Evaluating gbm:   0%|          | 0/224 [00:00<?, ?it/s]Evaluating gbm:   0%|          | 1/224 [00:03<11:24,  3.07s/it]Evaluating gbm:   1%|▏         | 3/224 [00:03<03:04,  1.20it/s]Evaluating gbm:   2%|▏         | 5/224 [00:05<03:33,  1.03it/s]Evaluating gbm:   3%|▎         | 7/224 [00:05<02:07,  1.70it/s]Evaluating gbm:   4%|▍         | 9/224 [00:07<02:58,  1.21it/s]Evaluating gbm:   5%|▍         | 11/224 [00:08<01:59,  1.78it/s]Evaluating gbm:   6%|▌         | 13/224 [00:10<02:51,  1.23it/s]Evaluating gbm:   7%|▋         | 15/224 [00:10<01:59,  1.74it/s]Evaluating gbm:   8%|▊         | 17/224 [00:13<02:42,  1.27it/s]Evaluating gbm:   8%|▊         | 19/224 [00:13<01:55,  1.78it/s]Evaluating gbm:   9%|▉         | 21/224 [00:15<02:32,  1.33it/s]Evaluating gbm:  10%|█         | 23/224 [00:15<01:49,  1.84it/s]Evaluating gbm:  11%|█         | 25/224 [00:18<02:28,  1.34it/s]Evaluating gbm:  12%|█▏        | 27/224 [00:18<01:46,  1.85it/s]Evaluating gbm:  13%|█▎        | 29/224 [00:20<02:25,  1.34it/s]Evaluating gbm:  14%|█▍        | 31/224 [00:21<01:44,  1.85it/s]Evaluating gbm:  15%|█▍        | 33/224 [00:23<02:22,  1.34it/s]Evaluating gbm:  16%|█▌        | 35/224 [00:23<01:42,  1.84it/s]Evaluating gbm:  17%|█▋        | 37/224 [00:26<02:20,  1.33it/s]Evaluating gbm:  17%|█▋        | 39/224 [00:26<01:40,  1.84it/s]Evaluating gbm:  18%|█▊        | 41/224 [00:28<02:14,  1.36it/s]Evaluating gbm:  19%|█▉        | 43/224 [00:28<01:36,  1.87it/s]Evaluating gbm:  20%|██        | 45/224 [00:31<02:11,  1.36it/s]Evaluating gbm:  21%|██        | 47/224 [00:31<01:34,  1.86it/s]Evaluating gbm:  22%|██▏       | 49/224 [00:33<02:08,  1.36it/s]Evaluating gbm:  23%|██▎       | 51/224 [00:33<01:32,  1.87it/s]Evaluating gbm:  24%|██▎       | 53/224 [00:36<02:05,  1.36it/s]Evaluating gbm:  25%|██▍       | 55/224 [00:36<01:30,  1.87it/s]Evaluating gbm:  25%|██▌       | 57/224 [00:38<02:02,  1.37it/s]Evaluating gbm:  26%|██▋       | 59/224 [00:38<01:27,  1.88it/s]Evaluating gbm:  27%|██▋       | 61/224 [00:41<02:03,  1.32it/s]Evaluating gbm:  28%|██▊       | 63/224 [00:41<01:28,  1.81it/s]Evaluating gbm:  29%|██▉       | 65/224 [00:44<02:01,  1.31it/s]Evaluating gbm:  30%|██▉       | 67/224 [00:44<01:27,  1.80it/s]Evaluating gbm:  31%|███       | 69/224 [00:46<01:57,  1.31it/s]Evaluating gbm:  32%|███▏      | 71/224 [00:46<01:24,  1.81it/s]Evaluating gbm:  33%|███▎      | 73/224 [00:49<01:54,  1.32it/s]Evaluating gbm:  33%|███▎      | 75/224 [00:49<01:22,  1.81it/s]Evaluating gbm:  34%|███▍      | 77/224 [00:51<01:49,  1.35it/s]Evaluating gbm:  35%|███▌      | 79/224 [00:52<01:18,  1.85it/s]Evaluating gbm:  36%|███▌      | 81/224 [00:54<01:45,  1.35it/s]Evaluating gbm:  37%|███▋      | 83/224 [00:54<01:15,  1.86it/s]Evaluating gbm:  38%|███▊      | 85/224 [00:57<01:43,  1.34it/s]Evaluating gbm:  39%|███▉      | 87/224 [00:57<01:14,  1.84it/s]Evaluating gbm:  40%|███▉      | 89/224 [00:59<01:39,  1.36it/s]Evaluating gbm:  41%|████      | 91/224 [00:59<01:11,  1.86it/s]Evaluating gbm:  42%|████▏     | 93/224 [01:02<01:36,  1.36it/s]Evaluating gbm:  42%|████▏     | 95/224 [01:02<01:09,  1.86it/s]Evaluating gbm:  43%|████▎     | 97/224 [01:04<01:33,  1.36it/s]Evaluating gbm:  44%|████▍     | 99/224 [01:04<01:06,  1.87it/s]Evaluating gbm:  45%|████▌     | 101/224 [01:07<01:31,  1.35it/s]Evaluating gbm:  46%|████▌     | 103/224 [01:07<01:05,  1.86it/s]Evaluating gbm:  47%|████▋     | 105/224 [01:09<01:27,  1.36it/s]Evaluating gbm:  48%|████▊     | 107/224 [01:09<01:02,  1.87it/s]Evaluating gbm:  49%|████▊     | 109/224 [01:12<01:24,  1.36it/s]Evaluating gbm:  50%|████▉     | 111/224 [01:12<01:00,  1.87it/s]Evaluating gbm:  50%|█████     | 113/224 [01:14<01:22,  1.35it/s]Evaluating gbm:  51%|█████▏    | 115/224 [01:15<00:58,  1.85it/s]Evaluating gbm:  52%|█████▏    | 117/224 [01:17<01:19,  1.35it/s]Evaluating gbm:  53%|█████▎    | 119/224 [01:17<00:56,  1.86it/s]Evaluating gbm:  54%|█████▍    | 121/224 [01:19<01:15,  1.37it/s]Evaluating gbm:  55%|█████▍    | 123/224 [01:20<00:53,  1.87it/s]Evaluating gbm:  56%|█████▌    | 125/224 [01:22<01:12,  1.36it/s]Evaluating gbm:  57%|█████▋    | 127/224 [01:22<00:51,  1.87it/s]Evaluating gbm:  58%|█████▊    | 129/224 [01:25<01:10,  1.34it/s]Evaluating gbm:  58%|█████▊    | 131/224 [01:25<00:50,  1.84it/s]Evaluating gbm:  59%|█████▉    | 133/224 [01:27<01:07,  1.36it/s]Evaluating gbm:  60%|██████    | 135/224 [01:27<00:47,  1.86it/s]Evaluating gbm:  61%|██████    | 137/224 [01:30<01:04,  1.35it/s]Evaluating gbm:  62%|██████▏   | 139/224 [01:30<00:46,  1.84it/s]Evaluating gbm:  63%|██████▎   | 141/224 [01:32<01:00,  1.37it/s]Evaluating gbm:  64%|██████▍   | 143/224 [01:32<00:43,  1.87it/s]Evaluating gbm:  65%|██████▍   | 145/224 [01:35<00:58,  1.35it/s]Evaluating gbm:  66%|██████▌   | 147/224 [01:35<00:41,  1.85it/s]Evaluating gbm:  67%|██████▋   | 149/224 [01:38<00:57,  1.32it/s]Evaluating gbm:  67%|██████▋   | 151/224 [01:38<00:40,  1.80it/s]Evaluating gbm:  68%|██████▊   | 153/224 [01:40<00:52,  1.35it/s]Evaluating gbm:  69%|██████▉   | 155/224 [01:40<00:37,  1.85it/s]Evaluating gbm:  70%|███████   | 157/224 [01:43<00:50,  1.34it/s]Evaluating gbm:  71%|███████   | 159/224 [01:43<00:35,  1.84it/s]Evaluating gbm:  72%|███████▏  | 161/224 [01:45<00:46,  1.35it/s]Evaluating gbm:  73%|███████▎  | 163/224 [01:45<00:33,  1.84it/s]Evaluating gbm:  74%|███████▎  | 165/224 [01:48<00:43,  1.36it/s]Evaluating gbm:  75%|███████▍  | 167/224 [01:48<00:30,  1.86it/s]Evaluating gbm:  75%|███████▌  | 169/224 [01:50<00:41,  1.34it/s]Evaluating gbm:  76%|███████▋  | 171/224 [01:50<00:28,  1.84it/s]Evaluating gbm:  77%|███████▋  | 173/224 [01:53<00:38,  1.34it/s]Evaluating gbm:  78%|███████▊  | 175/224 [01:53<00:26,  1.84it/s]Evaluating gbm:  79%|███████▉  | 177/224 [01:55<00:35,  1.34it/s]Evaluating gbm:  80%|███████▉  | 179/224 [01:56<00:24,  1.83it/s]Evaluating gbm:  81%|████████  | 181/224 [01:58<00:32,  1.32it/s]Evaluating gbm:  82%|████████▏ | 183/224 [01:58<00:22,  1.81it/s]Evaluating gbm:  83%|████████▎ | 185/224 [02:01<00:29,  1.34it/s]Evaluating gbm:  83%|████████▎ | 187/224 [02:01<00:20,  1.82it/s]Evaluating gbm:  84%|████████▍ | 189/224 [02:03<00:25,  1.35it/s]Evaluating gbm:  85%|████████▌ | 191/224 [02:03<00:17,  1.84it/s]Evaluating gbm:  86%|████████▌ | 193/224 [02:06<00:22,  1.36it/s]Evaluating gbm:  87%|████████▋ | 195/224 [02:06<00:15,  1.86it/s]Evaluating gbm:  88%|████████▊ | 197/224 [02:08<00:19,  1.36it/s]Evaluating gbm:  89%|████████▉ | 199/224 [02:08<00:13,  1.86it/s]Evaluating gbm:  90%|████████▉ | 201/224 [02:11<00:16,  1.36it/s]Evaluating gbm:  91%|█████████ | 203/224 [02:11<00:11,  1.87it/s]Evaluating gbm:  92%|█████████▏| 205/224 [02:13<00:13,  1.37it/s]Evaluating gbm:  92%|█████████▏| 207/224 [02:13<00:09,  1.88it/s]Evaluating gbm:  93%|█████████▎| 209/224 [02:16<00:11,  1.36it/s]Evaluating gbm:  94%|█████████▍| 211/224 [02:16<00:06,  1.87it/s]Evaluating gbm:  95%|█████████▌| 213/224 [02:18<00:08,  1.37it/s]Evaluating gbm:  96%|█████████▌| 215/224 [02:19<00:04,  1.88it/s]Evaluating gbm:  97%|█████████▋| 217/224 [02:21<00:05,  1.36it/s]Evaluating gbm:  98%|█████████▊| 219/224 [02:21<00:02,  1.87it/s]Evaluating gbm:  99%|█████████▊| 221/224 [02:23<00:02,  1.36it/s]Evaluating gbm: 100%|█████████▉| 223/224 [02:24<00:00,  1.87it/s]Evaluating gbm: 100%|██████████| 224/224 [02:24<00:00,  1.55it/s]
+Evaluation complete.
+
+--- Evaluating Dataset ---
+  Synth:    /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/final_samples/pdgm
+  Original: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+----------------------------
+Found 64 synthetic patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/final_samples/pdgm
+[MAP] s00000 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00001 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00002 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00003 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00004 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00005 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00006 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00007 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00008 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00009 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00010 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00011 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00012 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00013 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00014 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00015 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00016 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00017 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00018 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00019 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00020 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00021 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00022 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00023 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00024 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00025 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00026 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00027 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00028 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00029 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00030 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00031 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00032 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00033 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00034 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00035 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00036 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00037 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00038 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00039 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00040 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00041 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00042 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00043 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00044 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00045 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00046 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00047 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00048 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00049 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00050 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00051 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00052 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00053 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00054 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00055 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00056 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00057 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00058 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00059 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00060 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00061 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00062 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00063 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] Mapped 64/64 synth folders (unmapped=0, missing_files=0).
+Building slice index (depth=min(orig,synth))...
+Built index: 7168 total slices from 64 mapped patients.
+Running evaluation on 7168 slices...
+Evaluating pdgm:   0%|          | 0/224 [00:00<?, ?it/s]Evaluating pdgm:   0%|          | 1/224 [00:02<10:11,  2.74s/it]Evaluating pdgm:   1%|▏         | 3/224 [00:02<02:48,  1.31it/s]Evaluating pdgm:   2%|▏         | 5/224 [00:05<03:42,  1.02s/it]Evaluating pdgm:   3%|▎         | 7/224 [00:05<02:13,  1.63it/s]Evaluating pdgm:   4%|▍         | 9/224 [00:08<03:04,  1.17it/s]Evaluating pdgm:   5%|▍         | 11/224 [00:08<02:03,  1.72it/s]Evaluating pdgm:   6%|▌         | 13/224 [00:10<02:53,  1.22it/s]Evaluating pdgm:   7%|▋         | 15/224 [00:10<02:00,  1.73it/s]Evaluating pdgm:   8%|▊         | 17/224 [00:13<02:42,  1.27it/s]Evaluating pdgm:   8%|▊         | 19/224 [00:13<01:55,  1.78it/s]Evaluating pdgm:   9%|▉         | 21/224 [00:15<02:34,  1.31it/s]Evaluating pdgm:  10%|█         | 23/224 [00:16<01:50,  1.81it/s]Evaluating pdgm:  11%|█         | 25/224 [00:18<02:30,  1.32it/s]Evaluating pdgm:  12%|█▏        | 27/224 [00:18<01:48,  1.82it/s]Evaluating pdgm:  13%|█▎        | 29/224 [00:21<02:27,  1.32it/s]Evaluating pdgm:  14%|█▍        | 31/224 [00:21<01:46,  1.81it/s]Evaluating pdgm:  15%|█▍        | 33/224 [00:23<02:25,  1.31it/s]Evaluating pdgm:  16%|█▌        | 35/224 [00:23<01:44,  1.80it/s]Evaluating pdgm:  17%|█▋        | 37/224 [00:26<02:20,  1.33it/s]Evaluating pdgm:  17%|█▋        | 39/224 [00:26<01:41,  1.82it/s]Evaluating pdgm:  18%|█▊        | 41/224 [00:28<02:14,  1.36it/s]Evaluating pdgm:  19%|█▉        | 42/224 [00:28<01:53,  1.60it/s]Evaluating pdgm:  20%|█▉        | 44/224 [00:29<01:18,  2.28it/s]Evaluating pdgm:  20%|██        | 45/224 [00:31<02:24,  1.24it/s]Evaluating pdgm:  21%|██        | 47/224 [00:31<01:36,  1.83it/s]Evaluating pdgm:  22%|██▏       | 49/224 [00:34<02:14,  1.30it/s]Evaluating pdgm:  23%|██▎       | 51/224 [00:34<01:33,  1.85it/s]Evaluating pdgm:  24%|██▎       | 53/224 [00:36<02:09,  1.32it/s]Evaluating pdgm:  24%|██▍       | 54/224 [00:36<01:48,  1.56it/s]Evaluating pdgm:  25%|██▌       | 56/224 [00:36<01:14,  2.26it/s]Evaluating pdgm:  25%|██▌       | 57/224 [00:39<02:17,  1.22it/s]Evaluating pdgm:  26%|██▋       | 59/224 [00:39<01:31,  1.81it/s]Evaluating pdgm:  27%|██▋       | 61/224 [00:41<02:10,  1.25it/s]Evaluating pdgm:  28%|██▊       | 63/224 [00:42<01:31,  1.77it/s]Evaluating pdgm:  29%|██▉       | 65/224 [00:44<02:02,  1.29it/s]Evaluating pdgm:  30%|██▉       | 67/224 [00:44<01:27,  1.80it/s]Evaluating pdgm:  31%|███       | 69/224 [00:47<01:57,  1.32it/s]Evaluating pdgm:  31%|███▏      | 70/224 [00:47<01:38,  1.57it/s]Evaluating pdgm:  32%|███▏      | 72/224 [00:47<01:07,  2.25it/s]Evaluating pdgm:  33%|███▎      | 73/224 [00:49<02:02,  1.23it/s]Evaluating pdgm:  33%|███▎      | 74/224 [00:49<01:39,  1.51it/s]Evaluating pdgm:  34%|███▍      | 76/224 [00:49<01:04,  2.31it/s]Evaluating pdgm:  34%|███▍      | 77/224 [00:52<02:03,  1.19it/s]Evaluating pdgm:  35%|███▍      | 78/224 [00:52<01:38,  1.48it/s]Evaluating pdgm:  36%|███▌      | 80/224 [00:52<01:02,  2.31it/s]Evaluating pdgm:  36%|███▌      | 81/224 [00:54<02:00,  1.19it/s]Evaluating pdgm:  37%|███▋      | 82/224 [00:55<01:38,  1.44it/s]Evaluating pdgm:  38%|███▊      | 84/224 [00:55<01:01,  2.28it/s]Evaluating pdgm:  38%|███▊      | 85/224 [00:57<02:00,  1.15it/s]Evaluating pdgm:  38%|███▊      | 86/224 [00:57<01:39,  1.39it/s]Evaluating pdgm:  39%|███▉      | 88/224 [00:57<01:01,  2.21it/s]Evaluating pdgm:  40%|███▉      | 89/224 [01:00<01:53,  1.19it/s]Evaluating pdgm:  40%|████      | 90/224 [01:00<01:33,  1.43it/s]Evaluating pdgm:  41%|████      | 92/224 [01:00<00:57,  2.28it/s]Evaluating pdgm:  42%|████▏     | 93/224 [01:02<01:51,  1.17it/s]Evaluating pdgm:  42%|████▏     | 94/224 [01:02<01:31,  1.42it/s]Evaluating pdgm:  43%|████▎     | 96/224 [01:03<00:56,  2.27it/s]Evaluating pdgm:  43%|████▎     | 97/224 [01:05<01:46,  1.19it/s]Evaluating pdgm:  44%|████▍     | 98/224 [01:05<01:27,  1.45it/s]Evaluating pdgm:  45%|████▍     | 100/224 [01:05<00:53,  2.30it/s]Evaluating pdgm:  45%|████▌     | 101/224 [01:07<01:43,  1.19it/s]Evaluating pdgm:  46%|████▌     | 102/224 [01:08<01:23,  1.45it/s]Evaluating pdgm:  46%|████▋     | 104/224 [01:08<00:51,  2.31it/s]Evaluating pdgm:  47%|████▋     | 105/224 [01:10<01:39,  1.19it/s]Evaluating pdgm:  47%|████▋     | 106/224 [01:10<01:21,  1.45it/s]Evaluating pdgm:  48%|████▊     | 108/224 [01:10<00:50,  2.32it/s]Evaluating pdgm:  49%|████▊     | 109/224 [01:13<01:36,  1.19it/s]Evaluating pdgm:  49%|████▉     | 110/224 [01:13<01:21,  1.40it/s]Evaluating pdgm:  50%|█████     | 112/224 [01:13<00:50,  2.24it/s]Evaluating pdgm:  50%|█████     | 113/224 [01:15<01:33,  1.19it/s]Evaluating pdgm:  51%|█████     | 114/224 [01:16<01:19,  1.38it/s]Evaluating pdgm:  52%|█████▏    | 116/224 [01:16<00:49,  2.20it/s]Evaluating pdgm:  52%|█████▏    | 117/224 [01:18<01:27,  1.23it/s]Evaluating pdgm:  53%|█████▎    | 118/224 [01:18<01:15,  1.40it/s]Evaluating pdgm:  54%|█████▎    | 120/224 [01:18<00:46,  2.24it/s]Evaluating pdgm:  54%|█████▍    | 121/224 [01:20<01:23,  1.23it/s]Evaluating pdgm:  54%|█████▍    | 122/224 [01:21<01:13,  1.39it/s]Evaluating pdgm:  55%|█████▌    | 124/224 [01:21<00:45,  2.22it/s]Evaluating pdgm:  56%|█████▌    | 125/224 [01:23<01:18,  1.25it/s]Evaluating pdgm:  56%|█████▋    | 126/224 [01:23<01:09,  1.41it/s]Evaluating pdgm:  57%|█████▋    | 128/224 [01:23<00:42,  2.25it/s]Evaluating pdgm:  58%|█████▊    | 129/224 [01:25<01:16,  1.24it/s]Evaluating pdgm:  58%|█████▊    | 130/224 [01:26<01:07,  1.40it/s]Evaluating pdgm:  59%|█████▉    | 132/224 [01:26<00:41,  2.23it/s]Evaluating pdgm:  59%|█████▉    | 133/224 [01:28<01:13,  1.23it/s]Evaluating pdgm:  60%|█████▉    | 134/224 [01:28<01:04,  1.40it/s]Evaluating pdgm:  61%|██████    | 136/224 [01:29<00:39,  2.23it/s]Evaluating pdgm:  61%|██████    | 137/224 [01:31<01:10,  1.23it/s]Evaluating pdgm:  62%|██████▏   | 138/224 [01:31<01:03,  1.36it/s]Evaluating pdgm:  62%|██████▎   | 140/224 [01:31<00:38,  2.17it/s]Evaluating pdgm:  63%|██████▎   | 141/224 [01:33<01:06,  1.25it/s]Evaluating pdgm:  63%|██████▎   | 142/224 [01:34<01:00,  1.36it/s]Evaluating pdgm:  64%|██████▍   | 144/224 [01:34<00:36,  2.17it/s]Evaluating pdgm:  65%|██████▍   | 145/224 [01:36<01:03,  1.24it/s]Evaluating pdgm:  65%|██████▌   | 146/224 [01:36<00:58,  1.34it/s]Evaluating pdgm:  66%|██████▌   | 148/224 [01:37<00:35,  2.13it/s]Evaluating pdgm:  67%|██████▋   | 149/224 [01:39<00:59,  1.26it/s]Evaluating pdgm:  67%|██████▋   | 150/224 [01:39<00:55,  1.34it/s]Evaluating pdgm:  68%|██████▊   | 152/224 [01:39<00:33,  2.14it/s]Evaluating pdgm:  68%|██████▊   | 153/224 [01:41<00:54,  1.30it/s]Evaluating pdgm:  69%|██████▉   | 154/224 [01:42<00:51,  1.37it/s]Evaluating pdgm:  70%|██████▉   | 156/224 [01:42<00:31,  2.19it/s]Evaluating pdgm:  70%|███████   | 157/224 [01:44<00:52,  1.28it/s]Evaluating pdgm:  71%|███████   | 158/224 [01:44<00:47,  1.38it/s]Evaluating pdgm:  71%|███████▏  | 160/224 [01:44<00:29,  2.20it/s]Evaluating pdgm:  72%|███████▏  | 161/224 [01:46<00:48,  1.30it/s]Evaluating pdgm:  72%|███████▏  | 162/224 [01:47<00:46,  1.34it/s]Evaluating pdgm:  73%|███████▎  | 164/224 [01:47<00:28,  2.14it/s]Evaluating pdgm:  74%|███████▎  | 165/224 [01:49<00:45,  1.31it/s]Evaluating pdgm:  74%|███████▍  | 166/224 [01:49<00:43,  1.35it/s]Evaluating pdgm:  75%|███████▌  | 168/224 [01:50<00:26,  2.15it/s]Evaluating pdgm:  75%|███████▌  | 169/224 [01:51<00:41,  1.31it/s]Evaluating pdgm:  76%|███████▌  | 170/224 [01:52<00:40,  1.33it/s]Evaluating pdgm:  77%|███████▋  | 172/224 [01:52<00:24,  2.12it/s]Evaluating pdgm:  77%|███████▋  | 173/224 [01:54<00:39,  1.30it/s]Evaluating pdgm:  78%|███████▊  | 174/224 [01:55<00:38,  1.32it/s]Evaluating pdgm:  79%|███████▊  | 176/224 [01:55<00:22,  2.10it/s]Evaluating pdgm:  79%|███████▉  | 177/224 [01:57<00:35,  1.33it/s]Evaluating pdgm:  79%|███████▉  | 178/224 [01:57<00:34,  1.33it/s]Evaluating pdgm:  80%|████████  | 180/224 [01:57<00:20,  2.12it/s]Evaluating pdgm:  81%|████████  | 181/224 [01:59<00:32,  1.32it/s]Evaluating pdgm:  81%|████████▏ | 182/224 [02:00<00:31,  1.33it/s]Evaluating pdgm:  82%|████████▏ | 184/224 [02:00<00:18,  2.12it/s]Evaluating pdgm:  83%|████████▎ | 185/224 [02:02<00:29,  1.34it/s]Evaluating pdgm:  83%|████████▎ | 186/224 [02:03<00:28,  1.33it/s]Evaluating pdgm:  84%|████████▍ | 188/224 [02:03<00:16,  2.13it/s]Evaluating pdgm:  84%|████████▍ | 189/224 [02:04<00:26,  1.33it/s]Evaluating pdgm:  85%|████████▍ | 190/224 [02:05<00:25,  1.32it/s]Evaluating pdgm:  86%|████████▌ | 192/224 [02:05<00:15,  2.11it/s]Evaluating pdgm:  86%|████████▌ | 193/224 [02:07<00:23,  1.34it/s]Evaluating pdgm:  87%|████████▋ | 194/224 [02:08<00:23,  1.30it/s]Evaluating pdgm:  88%|████████▊ | 196/224 [02:08<00:13,  2.09it/s]Evaluating pdgm:  88%|████████▊ | 197/224 [02:10<00:19,  1.37it/s]Evaluating pdgm:  88%|████████▊ | 198/224 [02:10<00:19,  1.30it/s]Evaluating pdgm:  89%|████████▉ | 200/224 [02:11<00:11,  2.08it/s]Evaluating pdgm:  90%|████████▉ | 201/224 [02:12<00:16,  1.37it/s]Evaluating pdgm:  90%|█████████ | 202/224 [02:13<00:16,  1.30it/s]Evaluating pdgm:  91%|█████████ | 204/224 [02:13<00:09,  2.07it/s]Evaluating pdgm:  92%|█████████▏| 205/224 [02:15<00:13,  1.37it/s]Evaluating pdgm:  92%|█████████▏| 206/224 [02:16<00:13,  1.30it/s]Evaluating pdgm:  93%|█████████▎| 208/224 [02:16<00:07,  2.07it/s]Evaluating pdgm:  93%|█████████▎| 209/224 [02:17<00:10,  1.39it/s]Evaluating pdgm:  94%|█████████▍| 210/224 [02:18<00:10,  1.31it/s]Evaluating pdgm:  95%|█████████▍| 212/224 [02:18<00:05,  2.09it/s]Evaluating pdgm:  95%|█████████▌| 213/224 [02:20<00:07,  1.39it/s]Evaluating pdgm:  96%|█████████▌| 214/224 [02:21<00:07,  1.31it/s]Evaluating pdgm:  96%|█████████▋| 216/224 [02:21<00:03,  2.10it/s]Evaluating pdgm:  97%|█████████▋| 217/224 [02:22<00:04,  1.41it/s]Evaluating pdgm:  97%|█████████▋| 218/224 [02:23<00:04,  1.29it/s]Evaluating pdgm:  98%|█████████▊| 220/224 [02:24<00:01,  2.06it/s]Evaluating pdgm:  99%|█████████▊| 221/224 [02:25<00:02,  1.41it/s]Evaluating pdgm:  99%|█████████▉| 222/224 [02:26<00:01,  1.29it/s]Evaluating pdgm: 100%|██████████| 224/224 [02:26<00:00,  2.06it/s]Evaluating pdgm: 100%|██████████| 224/224 [02:26<00:00,  1.53it/s]
+Evaluation complete.
+
+
+--- 📊 Final Evaluation Summary ---
+--------------------------------------
+Dataset: GBM
+  SSIM (Higher is better):  0.699810
+  FID (Lower is better):    38.3229
+--------------------------------------
+Dataset: PDGM
+  SSIM (Higher is better):  0.696861
+  FID (Lower is better):    51.3281
+--------------------------------------

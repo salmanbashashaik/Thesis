@@ -1,0 +1,114 @@
+[INFO] Using specified domain: pdgm
+[INFO] Using default mask root for pdgm: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+Found 64 patient folders in /home/j98my/models/runs/vae_gan_64/pdgm
+Using masks from: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+Domain: PDGM
+Built index: 2763 positive slices, 4405 negative slices from 64 patients.
+Loading model from /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+
+======================================================================
+ENHANCED EVALUATION WITH DOMAIN GAP ANALYSIS
+======================================================================
+
+STEP 1: Domain Adaptation Analysis
+This separates domain gap from quality issues
+----------------------------------------------------------------------
+
+======================================================================
+DOMAIN ADAPTATION ANALYSIS
+======================================================================
+
+Adaptation set: 10 samples
+Test set: 7158 samples
+
+1. Evaluating WITHOUT adaptation...
+   AUC (no adaptation): 0.8827
+
+2. Adapting model on 10 samples...
+   Epoch 2/5, Loss: 1.1479
+   Epoch 4/5, Loss: 1.6336
+
+3. Evaluating WITH adaptation...
+   AUC (with adaptation): 0.8641
+
+======================================================================
+DOMAIN GAP ANALYSIS
+======================================================================
+AUC without adaptation: 0.8827
+AUC with adaptation:    0.8641
+Domain gap effect:      -0.0186
+
+Interpretation:
+  Small domain gap - performance is mostly limited by
+  intrinsic quality, not distribution shift.
+======================================================================
+
+STEP 2: Bootstrap Confidence Intervals
+This provides robust uncertainty estimates
+----------------------------------------------------------------------
+
+======================================================================
+BOOTSTRAP CONFIDENCE INTERVALS (1000 iterations)
+======================================================================
+
+Bootstrap Results:
+  Mean:      0.8825
+  Std Dev:   0.0039
+  Median:    0.8825
+  95% CI:    [0.8749, 0.8897]
+  Range:     [0.8701, 0.8939]
+======================================================================
+
+STEP 3: Stratified Evaluation
+This shows performance breakdown by subgroups
+----------------------------------------------------------------------
+
+======================================================================
+STRATIFIED EVALUATION
+======================================================================
+
+Stratified Metrics:
+  Overall AUC:                 0.8825
+  Patient-level AUC:           0.8716 ± 0.1235
+  Mean prob on positive:       0.5647
+  Median prob on positive:     0.6142
+  Mean prob on negative:       0.0829
+  Median prob on negative:     0.0150
+  N patients with both labels: 64
+======================================================================
+
+
+======================================================================
+FINAL SUMMARY REPORT
+======================================================================
+
+DOMAIN: PDGM
+Synthetic samples: 64
+Total slices evaluated: 7168
+
+1. BASIC PERFORMANCE:
+   AUC: 0.8825 ± 0.0039
+   95% CI: [0.8749, 0.8897]
+
+2. DOMAIN GAP EFFECT:
+   AUC without adaptation: 0.8827
+   AUC with adaptation:    0.8641
+   Domain gap:             -0.0186
+   Interpretation: 0.019 of potential improvement
+                   is achievable with 10 samples
+
+3. PATIENT-LEVEL PERFORMANCE:
+   Patient AUC: 0.8716 ± 0.1235
+
+======================================================================
+RECOMMENDATIONS FOR PAPER:
+======================================================================
+Report Accuracy as: {'accuracy': 0.8003627232142857, 'balanced_accuracy': 0.7514304682066368, 'auc': 0.8825127156609369, 'sensitivity': 0.5378212088309808, 'specificity': 0.9650397275822928, 'f1': 0.6749943220531456, 'tp': 1486, 'tn': 4251, 'fp': 154, 'fn': 1277}
+Report AUC as: 0.882 ± 0.004
+               [95% CI: 0.875, 0.890]
+
+Note that 0.019 AUC points are due to domain
+shift rather than quality, as evidenced by adaptation experiment.
+======================================================================
+
+Results saved to: /home/j98my/models/runs/vae_gan_64/pdgm/enhanced_evaluation_results.json

@@ -1,0 +1,49 @@
+[2026-01-30 21:18:04] ============================================================
+[2026-01-30 21:18:04] COMPREHENSIVE SYNTHETIC IMAGE EVALUATION
+[2026-01-30 21:18:04] ============================================================
+[2026-01-30 21:18:04] 
+[2026-01-30 21:18:04] Configuration:
+[2026-01-30 21:18:04]   Domains to evaluate:
+[2026-01-30 21:18:04]     - GBM
+[2026-01-30 21:18:04]     - PDGM
+[2026-01-30 21:18:04] 
+[2026-01-30 21:18:04]   GBM Paths:
+[2026-01-30 21:18:04]     Synthetic: /home/j98my/models/runs/ldm_3d_diffuse_glioma/new_LAT28_VAE200_50_LDM300_200_TUNE2_UNET96/final_samples_64/final_samples/gbm
+[2026-01-30 21:18:04]     Original:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+[2026-01-30 21:18:04]   PDGM Paths:
+[2026-01-30 21:18:04]     Synthetic: /home/j98my/models/runs/ldm_3d_diffuse_glioma/new_LAT28_VAE200_50_LDM300_200_TUNE2_UNET96/final_samples_64/final_samples/pdgm
+[2026-01-30 21:18:04]     Original:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+[2026-01-30 21:18:04] 
+[2026-01-30 21:18:04]   Mask root:          
+[2026-01-30 21:18:04]   CNN model:          /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+[2026-01-30 21:18:04]   Output directory:   /home/j98my/Evaluation/results/cldm
+[2026-01-30 21:18:04]   Image size:         224
+[2026-01-30 21:18:04]   Batch size:         32
+[2026-01-30 21:18:04]   Device:             cuda
+[2026-01-30 21:18:04]   Use resized:        Yes
+[2026-01-30 21:18:04] 
+[2026-01-30 21:18:04] ============================================================
+[2026-01-30 21:18:04] STEP 1: CNN Transferability Evaluation
+[2026-01-30 21:18:04] ============================================================
+[2026-01-30 21:18:04] 
+[2026-01-30 21:18:04] Evaluating GBM domain...
+[2026-01-30 21:18:04] Command: python3 /home/j98my/Evaluation/test_using_cnn_cv_DS.py             --synth_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/new_LAT28_VAE200_50_LDM300_200_TUNE2_UNET96/final_samples_64/final_samples/gbm             --model_path /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --n_adapt 10             --n_bootstrap 1000             --domain gbm             --use_resized
+[2026-01-30 21:18:04] 
+[2026-01-30 21:28:11] ✅ GBM CNN evaluation completed
+[2026-01-30 21:28:11]   GBM AUC: 0.812, Domain gap: -0.0111
+[2026-01-30 21:28:11] 
+[2026-01-30 21:28:11] Evaluating PDGM domain...
+[2026-01-30 21:28:11] Command: python3 /home/j98my/Evaluation/test_using_cnn_cv_DS.py             --synth_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/new_LAT28_VAE200_50_LDM300_200_TUNE2_UNET96/final_samples_64/final_samples/pdgm             --model_path /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --n_adapt 10             --n_bootstrap 1000             --domain pdgm             --use_resized
+[2026-01-30 21:28:11] 
+[2026-01-30 21:38:21] ✅ PDGM CNN evaluation completed
+[2026-01-30 21:38:21]   PDGM AUC: 0.882, Domain gap: -0.0039
+[2026-01-30 21:38:21] 
+[2026-01-30 21:38:21] ============================================================
+[2026-01-30 21:38:21] STEP 2: FID/SSIM Perceptual Metrics
+[2026-01-30 21:38:21] ============================================================
+[2026-01-30 21:38:21] 
+[2026-01-30 21:38:21] Running FID/SSIM evaluation...
+[2026-01-30 21:38:21] Output will be saved to: /home/j98my/Evaluation/results/cldm/fid_ssim_20260130_211804.txt
+[2026-01-30 21:38:21] 
+[2026-01-30 21:38:21] Command: python3 /home/j98my/Evaluation/test_using_fid_ssim.py             --synth_gbm_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/new_LAT28_VAE200_50_LDM300_200_TUNE2_UNET96/final_samples_64/final_samples/gbm             --original_gbm_root /home/j98my/Pre-Processing/prep/gbm_all_aligned             --synth_pdgm_root /home/j98my/models/runs/ldm_3d_diffuse_glioma/new_LAT28_VAE200_50_LDM300_200_TUNE2_UNET96/final_samples_64/final_samples/pdgm             --original_pdgm_root /home/j98my/Pre-Processing/prep/pdgm_target_aligned             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --use_resized
+[2026-01-30 21:38:21] 

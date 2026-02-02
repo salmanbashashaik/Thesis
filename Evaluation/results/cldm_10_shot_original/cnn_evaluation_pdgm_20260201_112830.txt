@@ -1,0 +1,183 @@
+[INFO] Using specified domain: pdgm
+[INFO] Using default mask root for pdgm: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+Found 64 patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/final_samples/pdgm
+Using masks from: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+Domain: PDGM
+[MAP] s00000 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00001 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00002 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00003 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00004 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00005 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00006 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00007 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00008 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00009 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00010 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00011 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00012 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00013 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00014 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00015 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00016 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00017 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00018 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00019 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00020 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00021 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00022 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00023 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00024 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00025 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00026 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00027 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00028 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00029 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00030 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00031 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00032 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00033 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00034 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00035 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00036 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00037 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00038 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00039 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00040 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00041 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00042 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00043 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00044 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00045 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00046 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00047 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00048 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00049 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00050 (pid=UCSF-PDGM-0018) -> mask: UCSF-PDGM-0018
+[MAP] s00051 (pid=UCSF-PDGM-0059) -> mask: UCSF-PDGM-0059
+[MAP] s00052 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+[MAP] s00053 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00054 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00055 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00056 (pid=UCSF-PDGM-0537) -> mask: UCSF-PDGM-0537
+[MAP] s00057 (pid=UCSF-PDGM-0023) -> mask: UCSF-PDGM-0023
+[MAP] s00058 (pid=UCSF-PDGM-0024) -> mask: UCSF-PDGM-0024
+[MAP] s00059 (pid=UCSF-PDGM-0013) -> mask: UCSF-PDGM-0013
+[MAP] s00060 (pid=UCSF-PDGM-0020) -> mask: UCSF-PDGM-0020
+[MAP] s00061 (pid=UCSF-PDGM-0026) -> mask: UCSF-PDGM-0026
+[MAP] s00062 (pid=UCSF-PDGM-0170) -> mask: UCSF-PDGM-0170
+[MAP] s00063 (pid=UCSF-PDGM-0022) -> mask: UCSF-PDGM-0022
+Built index: 2765 positive slices, 4403 negative slices from 64 patients.
+Loading model from /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+
+======================================================================
+ENHANCED EVALUATION WITH DOMAIN GAP ANALYSIS
+======================================================================
+
+STEP 1: Domain Adaptation Analysis
+This separates domain gap from quality issues
+----------------------------------------------------------------------
+
+======================================================================
+DOMAIN ADAPTATION ANALYSIS
+======================================================================
+
+Adaptation set: 10 samples
+Test set: 7158 samples
+
+1. Evaluating WITHOUT adaptation...
+   AUC (no adaptation): 0.8722
+
+2. Adapting model on 10 samples...
+   Epoch 2/5, Loss: 0.0289
+   Epoch 4/5, Loss: 0.0172
+
+3. Evaluating WITH adaptation...
+   AUC (with adaptation): 0.8662
+
+======================================================================
+DOMAIN GAP ANALYSIS
+======================================================================
+AUC without adaptation: 0.8722
+AUC with adaptation:    0.8662
+Domain gap effect:      -0.0060
+
+Interpretation:
+  Small domain gap - performance is mostly limited by
+  intrinsic quality, not distribution shift.
+======================================================================
+
+STEP 2: Bootstrap Confidence Intervals
+This provides robust uncertainty estimates
+----------------------------------------------------------------------
+
+======================================================================
+BOOTSTRAP CONFIDENCE INTERVALS (1000 iterations)
+======================================================================
+
+Bootstrap Results:
+  Mean:      0.8724
+  Std Dev:   0.0042
+  Median:    0.8725
+  95% CI:    [0.8641, 0.8804]
+  Range:     [0.8603, 0.8882]
+======================================================================
+
+STEP 3: Stratified Evaluation
+This shows performance breakdown by subgroups
+----------------------------------------------------------------------
+Checking Mode collapse
+Average pairwise similarity: 0.9861
+Max similarity: 0.9993
+Min similarity: 0.8819
+⚠️  HIGH MODE COLLAPSE - Samples are too similar!
+
+======================================================================
+STRATIFIED EVALUATION
+======================================================================
+
+Stratified Metrics:
+  Overall AUC:                 0.8725
+  Patient-level AUC:           0.8916 ± 0.0946
+  Mean prob on positive:       0.8103
+  Median prob on positive:     0.9974
+  Mean prob on negative:       0.2520
+  Median prob on negative:     0.0427
+  N patients with both labels: 64
+======================================================================
+
+
+======================================================================
+FINAL SUMMARY REPORT
+======================================================================
+
+DOMAIN: PDGM
+Synthetic samples: 64
+Total slices evaluated: 7168
+
+1. BASIC PERFORMANCE:
+   AUC: 0.8724 ± 0.0042
+   95% CI: [0.8641, 0.8804]
+
+2. DOMAIN GAP EFFECT:
+   AUC without adaptation: 0.8722
+   AUC with adaptation:    0.8662
+   Domain gap:             -0.0060
+   Interpretation: 0.006 of potential improvement
+                   is achievable with 10 samples
+
+3. PATIENT-LEVEL PERFORMANCE:
+   Patient AUC: 0.8916 ± 0.0946
+
+======================================================================
+RECOMMENDATIONS FOR PAPER:
+======================================================================
+Report Accuracy as: {'accuracy': 0.7919921875, 'balanced_accuracy': 0.7967780885874706, 'auc': 0.872456269541686, 'sensitivity': 0.8177215189873418, 'specificity': 0.7758346581875993, 'f1': 0.7520372526193247, 'tp': 2261, 'tn': 3416, 'fp': 987, 'fn': 504}
+Report AUC as: 0.872 ± 0.004
+               [95% CI: 0.864, 0.880]
+
+Note that 0.006 AUC points are due to domain
+shift rather than quality, as evidenced by adaptation experiment.
+======================================================================
+
+Results saved to: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_IMPROVED/final_samples/pdgm/enhanced_evaluation_results.json

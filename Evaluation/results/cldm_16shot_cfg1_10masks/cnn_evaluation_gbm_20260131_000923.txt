@@ -1,0 +1,135 @@
+[INFO] Using specified domain: gbm
+[INFO] Using default mask root for gbm: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+Found 16 patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm
+Using masks from: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+Domain: GBM
+[MAP] s00000 (pid=UPENN-GBM-00078_11) -> mask: UPENN-GBM-00078_11
+[MAP] s00001 (pid=UPENN-GBM-00549_11) -> mask: UPENN-GBM-00549_11
+[MAP] s00002 (pid=UPENN-GBM-00303_11) -> mask: UPENN-GBM-00303_11
+[MAP] s00003 (pid=UPENN-GBM-00326_11) -> mask: UPENN-GBM-00326_11
+[MAP] s00004 (pid=UPENN-GBM-00008_11) -> mask: UPENN-GBM-00008_11
+[MAP] s00005 (pid=UPENN-GBM-00531_11) -> mask: UPENN-GBM-00531_11
+[MAP] s00006 (pid=UPENN-GBM-00287_11) -> mask: UPENN-GBM-00287_11
+[MAP] s00007 (pid=UPENN-GBM-00248_11) -> mask: UPENN-GBM-00248_11
+[MAP] s00008 (pid=UPENN-GBM-00014_11) -> mask: UPENN-GBM-00014_11
+[MAP] s00009 (pid=UPENN-GBM-00374_11) -> mask: UPENN-GBM-00374_11
+[MAP] s00010 (pid=UPENN-GBM-00320_11) -> mask: UPENN-GBM-00320_11
+[MAP] s00011 (pid=UPENN-GBM-00094_11) -> mask: UPENN-GBM-00094_11
+[MAP] s00012 (pid=UPENN-GBM-00068_11) -> mask: UPENN-GBM-00068_11
+[MAP] s00013 (pid=UPENN-GBM-00040_11) -> mask: UPENN-GBM-00040_11
+[MAP] s00014 (pid=UPENN-GBM-00442_11) -> mask: UPENN-GBM-00442_11
+[MAP] s00015 (pid=UPENN-GBM-00257_11) -> mask: UPENN-GBM-00257_11
+Built index: 793 positive slices, 999 negative slices from 16 patients.
+Loading model from /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+
+======================================================================
+ENHANCED EVALUATION WITH DOMAIN GAP ANALYSIS
+======================================================================
+
+STEP 1: Domain Adaptation Analysis
+This separates domain gap from quality issues
+----------------------------------------------------------------------
+
+======================================================================
+DOMAIN ADAPTATION ANALYSIS
+======================================================================
+
+Adaptation set: 10 samples
+Test set: 1782 samples
+
+1. Evaluating WITHOUT adaptation...
+   AUC (no adaptation): 0.8337
+
+2. Adapting model on 10 samples...
+   Epoch 2/5, Loss: 0.8674
+   Epoch 4/5, Loss: 1.7435
+
+3. Evaluating WITH adaptation...
+   AUC (with adaptation): 0.8322
+
+======================================================================
+DOMAIN GAP ANALYSIS
+======================================================================
+AUC without adaptation: 0.8337
+AUC with adaptation:    0.8322
+Domain gap effect:      -0.0015
+
+Interpretation:
+  Small domain gap - performance is mostly limited by
+  intrinsic quality, not distribution shift.
+======================================================================
+
+STEP 2: Bootstrap Confidence Intervals
+This provides robust uncertainty estimates
+----------------------------------------------------------------------
+
+======================================================================
+BOOTSTRAP CONFIDENCE INTERVALS (1000 iterations)
+======================================================================
+
+Bootstrap Results:
+  Mean:      0.8336
+  Std Dev:   0.0099
+  Median:    0.8340
+  95% CI:    [0.8133, 0.8522]
+  Range:     [0.7976, 0.8629]
+======================================================================
+
+STEP 3: Stratified Evaluation
+This shows performance breakdown by subgroups
+----------------------------------------------------------------------
+Checking Mode collapse
+Average pairwise similarity: 0.9928
+Max similarity: 0.9993
+Min similarity: 0.9680
+⚠️  HIGH MODE COLLAPSE - Samples are too similar!
+
+======================================================================
+STRATIFIED EVALUATION
+======================================================================
+
+Stratified Metrics:
+  Overall AUC:                 0.8335
+  Patient-level AUC:           0.8351 ± 0.1685
+  Mean prob on positive:       0.6258
+  Median prob on positive:     0.9455
+  Mean prob on negative:       0.1843
+  Median prob on negative:     0.0059
+  N patients with both labels: 16
+======================================================================
+
+
+======================================================================
+FINAL SUMMARY REPORT
+======================================================================
+
+DOMAIN: GBM
+Synthetic samples: 16
+Total slices evaluated: 1792
+
+1. BASIC PERFORMANCE:
+   AUC: 0.8336 ± 0.0099
+   95% CI: [0.8133, 0.8522]
+
+2. DOMAIN GAP EFFECT:
+   AUC without adaptation: 0.8337
+   AUC with adaptation:    0.8322
+   Domain gap:             -0.0015
+   Interpretation: 0.001 of potential improvement
+                   is achievable with 10 samples
+
+3. PATIENT-LEVEL PERFORMANCE:
+   Patient AUC: 0.8351 ± 0.1685
+
+======================================================================
+RECOMMENDATIONS FOR PAPER:
+======================================================================
+Report Accuracy as: {'accuracy': 0.7276785714285714, 'balanced_accuracy': 0.7129803195376966, 'auc': 0.8335258335258335, 'sensitivity': 0.5851197982345523, 'specificity': 0.8408408408408409, 'f1': 0.655367231638418, 'tp': 464, 'tn': 840, 'fp': 159, 'fn': 329}
+Report AUC as: 0.834 ± 0.010
+               [95% CI: 0.813, 0.852]
+
+Note that 0.001 AUC points are due to domain
+shift rather than quality, as evidenced by adaptation experiment.
+======================================================================
+
+Results saved to: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm/enhanced_evaluation_results.json

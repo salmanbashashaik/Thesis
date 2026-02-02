@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/ema.py
 
@@ -20,12 +24,14 @@ Why device/dtype safety matters:
   - If not, we'll get runtime errors (device mismatch) or subtle precision issues.
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import torch
 import torch.nn as nn
 
 
+# Class definition: `EMA` encapsulates related model behavior.
 class EMA:
     """
     Exponential Moving Average tracker for a model's trainable parameters.
@@ -40,6 +46,7 @@ class EMA:
         Keys match model.named_parameters() names.
     """
 
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, model: nn.Module, decay: float = 0.999):
         # Force decay into float so downstream math is consistent
         self.decay = float(decay)
@@ -48,8 +55,11 @@ class EMA:
         self.shadow: dict[str, torch.Tensor] = {}
 
         # Initialize shadows from the model's current parameters
+
+        self.backup: dict[str, torch.Tensor] = {}
         self._init(model)
 
+    # Function: `_init` implements a reusable processing step.
     def _init(self, model: nn.Module) -> None:
         """
         Populate self.shadow with clones of the model's trainable parameters.
@@ -60,11 +70,44 @@ class EMA:
               * detach: not part of autograd graph
               * clone: independent storage (won't change if model params change)
         """
+        # Control-flow branch for conditional or iterative execution.
         for name, p in model.named_parameters():
+            # Control-flow branch for conditional or iterative execution.
             if p.requires_grad:
                 self.shadow[name] = p.detach().clone()
 
     @torch.no_grad()
+    # Function: `store` implements a reusable processing step.
+    def store(self, model: nn.Module) -> None:
+        """
+        Save current model parameters so we can restore them after sampling.
+        """
+        self.backup = {}
+        # Control-flow branch for conditional or iterative execution.
+        for name, p in model.named_parameters():
+            # Control-flow branch for conditional or iterative execution.
+            if p.requires_grad:
+                self.backup[name] = p.detach().clone()
+
+    @torch.no_grad()
+    # Function: `restore` implements a reusable processing step.
+    def restore(self, model: nn.Module) -> None:
+        """
+        Restore parameters saved by store().
+        """
+        # Control-flow branch for conditional or iterative execution.
+        if not getattr(self, "backup", None):
+            # Return the computed value to the caller.
+            return
+        # Control-flow branch for conditional or iterative execution.
+        for name, p in model.named_parameters():
+            # Control-flow branch for conditional or iterative execution.
+            if p.requires_grad and name in self.backup:
+                p.data.copy_(self.backup[name])
+        self.backup = {}
+
+    @torch.no_grad()
+    # Function: `_ensure_shadow_matches` implements a reusable processing step.
     def _ensure_shadow_matches(self, model: nn.Module) -> None:
         """
         Ensure every tracked shadow tensor matches the corresponding model parameter's:
@@ -81,11 +124,14 @@ class EMA:
           - If a stored shadow isn't a tensor, convert it into one.
           - If device/dtype differ, move/cast shadow to match the parameter.
         """
+        # Control-flow branch for conditional or iterative execution.
         for name, p in model.named_parameters():
             # EMA typically tracks only trainable parameters
+            # Control-flow branch for conditional or iterative execution.
             if not p.requires_grad:
                 continue
 
+            # Control-flow branch for conditional or iterative execution.
             if name not in self.shadow:
                 # If a param is new (rare), initialize it
                 self.shadow[name] = p.detach().clone()
@@ -94,16 +140,19 @@ class EMA:
             s = self.shadow[name]
 
             # Ensure tensor type (defensive programming for weird checkpoint formats)
+            # Control-flow branch for conditional or iterative execution.
             if not torch.is_tensor(s):
                 s = torch.tensor(s)
 
             # If mismatch, align shadow with model param
+            # Control-flow branch for conditional or iterative execution.
             if s.device != p.device or s.dtype != p.dtype:
                 s = s.to(device=p.device, dtype=p.dtype)
 
             self.shadow[name] = s
 
     @torch.no_grad()
+    # Function: `update` implements a reusable processing step.
     def update(self, model: nn.Module) -> None:
         """
         Update EMA shadows using the current model parameters.
@@ -118,7 +167,9 @@ class EMA:
         # First guarantee shadow tensors are aligned with current model params
         self._ensure_shadow_matches(model)
 
+        # Control-flow branch for conditional or iterative execution.
         for name, p in model.named_parameters():
+            # Control-flow branch for conditional or iterative execution.
             if not p.requires_grad:
                 continue
 
@@ -127,6 +178,7 @@ class EMA:
             self.shadow[name].mul_(self.decay).add_(p.detach(), alpha=1.0 - self.decay)
 
     @torch.no_grad()
+    # Function: `copy_to` implements a reusable processing step.
     def copy_to(self, model: nn.Module) -> None:
         """
         Copy EMA-smoothed parameters into the model (commonly used before sampling).
@@ -142,6 +194,8 @@ class EMA:
         """
         self._ensure_shadow_matches(model)
 
+        # Control-flow branch for conditional or iterative execution.
         for name, p in model.named_parameters():
+            # Control-flow branch for conditional or iterative execution.
             if p.requires_grad and name in self.shadow:
                 p.data.copy_(self.shadow[name])

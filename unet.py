@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/unet.py
 
@@ -27,6 +31,7 @@ Design intent:
     sizes so it works for S=28 (28->14->7) and can adapt if S changes.
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import math
@@ -38,6 +43,7 @@ import torch.nn.functional as F
 # ----------------------------
 # TIMESTEP EMBEDDING
 # ----------------------------
+# Function: `sinusoidal_timestep_embedding` implements a reusable processing step.
 def sinusoidal_timestep_embedding(timesteps: torch.Tensor, dim: int) -> torch.Tensor:
     """
     Create sinusoidal timestep embeddings (Transformer-style) for diffusion.
@@ -67,14 +73,17 @@ def sinusoidal_timestep_embedding(timesteps: torch.Tensor, dim: int) -> torch.Te
     )
     args = timesteps.float().unsqueeze(1) * freqs.unsqueeze(0)
     emb = torch.cat([torch.cos(args), torch.sin(args)], dim=1)
+    # Control-flow branch for conditional or iterative execution.
     if dim % 2 == 1:
         emb = torch.cat([emb, torch.zeros_like(emb[:, :1])], dim=1)
+    # Return the computed value to the caller.
     return emb
 
 
 # ----------------------------
 # RESBLOCK
 # ----------------------------
+# Class definition: `ResBlock3D` encapsulates related model behavior.
 class ResBlock3D(nn.Module):
     """
     A simple 3D residual block with timestep conditioning.
@@ -90,6 +99,7 @@ class ResBlock3D(nn.Module):
       - GroupNorm is used (more stable than BatchNorm for small batch sizes, common in 3D).
       - Groups are chosen to divide channels cleanly to avoid GroupNorm errors.
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, in_c: int, out_c: int, t_dim: int):
         super().__init__()
         # Choose GroupNorm groups that divide channels cleanly.
@@ -108,6 +118,7 @@ class ResBlock3D(nn.Module):
         # If in/out channels differ, learn a 1x1 conv skip; otherwise identity.
         self.skip = nn.Conv3d(in_c, out_c, 1) if in_c != out_c else nn.Identity()
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x: torch.Tensor, t_emb: torch.Tensor) -> torch.Tensor:
         """
         Inputs:
@@ -123,12 +134,14 @@ class ResBlock3D(nn.Module):
         h = h + t
         # Second conv and residual skip.
         h = self.conv2(F.silu(self.norm2(h)))
+        # Return the computed value to the caller.
         return h + self.skip(x)
 
 
 # ----------------------------
 # FiLM CONDITIONING
 # ----------------------------
+# Class definition: `MaskFiLM` encapsulates related model behavior.
 class MaskFiLM(nn.Module):
     """
     Very lightweight FiLM-style conditioning using a global scalar derived from mask/control.
@@ -148,6 +161,7 @@ class MaskFiLM(nn.Module):
       - Keeps modulation small so the network doesn't destabilize early training.
       - Lets the UNet learn baseline denoising first, then gradually use conditioning.
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, feat_c: int, hidden: int = 32):
         super().__init__()
         self.net = nn.Sequential(
@@ -156,6 +170,7 @@ class MaskFiLM(nn.Module):
             nn.Linear(hidden, feat_c * 2),
         )
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, h: torch.Tensor, mask_like: torch.Tensor) -> torch.Tensor:
         """
         Inputs:
@@ -172,12 +187,14 @@ class MaskFiLM(nn.Module):
         gamma, beta = gamma_beta.chunk(2, dim=1)
         gamma = gamma.view(-1, h.size(1), 1, 1, 1)
         beta = beta.view(-1, h.size(1), 1, 1, 1)
+        # Return the computed value to the caller.
         return h * (1.0 + 0.1 * gamma) + 0.1 * beta
 
 
 # ----------------------------
 # ZERO MODULE (ControlNet trick)
 # ----------------------------
+# Class definition: `ZeroConv3d` encapsulates related model behavior.
 class ZeroConv3d(nn.Module):
     """
     A 1x1x1 conv with weights/bias initialized to zero.
@@ -189,21 +206,26 @@ class ZeroConv3d(nn.Module):
 
     This greatly improves stability when adding ControlNet conditioning to an existing backbone.
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, in_c: int, out_c: int):
         super().__init__()
         self.conv = nn.Conv3d(in_c, out_c, 1)
         # Zero-init makes residuals start at zero (ControlNet stability).
         nn.init.zeros_(self.conv.weight)
+        # Control-flow branch for conditional or iterative execution.
         if self.conv.bias is not None:
             nn.init.zeros_(self.conv.bias)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # Return the computed value to the caller.
         return self.conv(x)
 
 
 # ----------------------------
 # CONTROLNET (multi-scale residuals)
 # ----------------------------
+# Class definition: `ControlNet3D` encapsulates related model behavior.
 class ControlNet3D(nn.Module):
     """
     A small side-network that processes the control tensor and produces additive residuals
@@ -227,6 +249,7 @@ class ControlNet3D(nn.Module):
       - Low-res residuals help with global structure and context.
     """
 
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, control_channels: int, base: int, t_dim: int):
         super().__init__()
 
@@ -245,6 +268,7 @@ class ControlNet3D(nn.Module):
         self.zero1 = ZeroConv3d(base * 2, base * 2)
         self.zero2 = ZeroConv3d(base * 4, base * 4)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, control: torch.Tensor, t_emb: torch.Tensor):
         """
         Inputs:
@@ -268,12 +292,14 @@ class ControlNet3D(nn.Module):
         r0 = self.zero0(hc0)
         r1 = self.zero1(hc1)
         r2 = self.zero2(hc2)
+        # Return the computed value to the caller.
         return r0, r1, r2
 
 
 # ----------------------------
 # UNET (LATENT SPACE) + CONTROLNET
 # ----------------------------
+# Class definition: `UNet3DLatentCond` encapsulates related model behavior.
 class UNet3DLatentCond(nn.Module):
     """
     Main denoiser network for latent DDPM.
@@ -295,6 +321,7 @@ class UNet3DLatentCond(nn.Module):
     Output:
       - Predicted noise epsilon in latent space: [B, z_channels, S, S, S]
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(
         self,
         z_channels: int = 8,
@@ -324,6 +351,7 @@ class UNet3DLatentCond(nn.Module):
         self.film0 = MaskFiLM(base)
         self.film1 = MaskFiLM(base * 2)
 
+        # Control-flow branch for conditional or iterative execution.
         if self.use_controlnet:
             # ControlNet produces residuals aligned with UNet scales.
             self.controlnet = ControlNet3D(control_channels=control_channels, base=base, t_dim=t_dim)
@@ -368,6 +396,7 @@ class UNet3DLatentCond(nn.Module):
             nn.Conv3d(base, z_channels, 3, 1, 1),
         )
 
+    # Function: `forward` implements a reusable processing step.
     def forward(
         self,
         z: torch.Tensor,
@@ -390,6 +419,7 @@ class UNet3DLatentCond(nn.Module):
         B = z.size(0)
 
         # Ensure mask always exists so input channel count stays consistent.
+        # Control-flow branch for conditional or iterative execution.
         if mask is None:
             # Default to a zero mask so conditioning channel always exists.
             mask = torch.zeros((B, 1, *z.shape[2:]), device=z.device, dtype=z.dtype)
@@ -403,14 +433,17 @@ class UNet3DLatentCond(nn.Module):
 
         # ControlNet residuals are optional (only if enabled).
         r0 = r1 = r2 = None
+        # Control-flow branch for conditional or iterative execution.
         if self.use_controlnet:
             # If no explicit control given, fall back to using mask as control.
+            # Control-flow branch for conditional or iterative execution.
             if control is None:
                 control = mask
             control = control.to(device=z.device, dtype=z.dtype, non_blocking=True)
 
             # Ensure control spatial size matches latent z.
             # This is the "latent-size agnostic" protection.
+            # Control-flow branch for conditional or iterative execution.
             if control.shape[2:] != z.shape[2:]:
                 control = F.interpolate(control, size=z.shape[2:], mode="nearest")
 
@@ -429,6 +462,7 @@ class UNet3DLatentCond(nn.Module):
         # Apply FiLM at full resolution using the mask.
         h0 = self.film0(h0, mask)
 
+        # Control-flow branch for conditional or iterative execution.
         if r0 is not None:
             # Add ControlNet residual at full resolution.
             h0 = h0 + r0
@@ -445,8 +479,10 @@ class UNet3DLatentCond(nn.Module):
         mask_h1 = F.interpolate(mask, size=h1.shape[2:], mode="nearest")
         h1 = self.film1(h1, mask_h1)
 
+        # Control-flow branch for conditional or iterative execution.
         if r1 is not None:
             # Safety: ensure ControlNet residual has matching spatial size.
+            # Control-flow branch for conditional or iterative execution.
             if r1.shape[2:] != h1.shape[2:]:
                 r1 = F.interpolate(r1, size=h1.shape[2:], mode="nearest")
             h1 = h1 + r1
@@ -455,7 +491,9 @@ class UNet3DLatentCond(nn.Module):
         h2 = self.pool2(h1)
         h2 = self.down2(h2, t_emb)
 
+        # Control-flow branch for conditional or iterative execution.
         if r2 is not None:
+            # Control-flow branch for conditional or iterative execution.
             if r2.shape[2:] != h2.shape[2:]:
                 r2 = F.interpolate(r2, size=h2.shape[2:], mode="nearest")
             h2 = h2 + r2
@@ -481,4 +519,5 @@ class UNet3DLatentCond(nn.Module):
         hu2 = self.up2_res(hu2, t_emb)
 
         # Final projection: predict noise residual in latent space.
+        # Return the computed value to the caller.
         return self.out(hu2)

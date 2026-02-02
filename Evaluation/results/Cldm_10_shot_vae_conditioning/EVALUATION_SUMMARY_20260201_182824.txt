@@ -1,0 +1,66 @@
+========================================================================
+SYNTHETIC IMAGE EVALUATION SUMMARY
+========================================================================
+
+Evaluation Date: Sun 01 Feb 2026 06:52:58 PM AST
+
+------------------------------------------------------------------------
+CONFIGURATION
+------------------------------------------------------------------------
+Domains Evaluated:
+  GBM:
+    Synthetic Root: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_SOURCE_ONLY/final_samples/gbm
+    Original Root:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+  PDGM:
+    Synthetic Root: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_SOURCE_ONLY/final_samples/pdgm
+    Original Root:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+
+CNN Model:           /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+Output Directory:    /home/j98my/Evaluation/results/source_only
+
+Image Size:          224
+Batch Size:          32
+Device:              cuda
+Use Resized:         Yes
+
+------------------------------------------------------------------------
+CNN TRANSFERABILITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  AUC (no adaptation):     0.949
+  Domain Gap:              -0.0056
+
+PDGM Domain:
+  AUC (no adaptation):     0.948
+  Domain Gap:              +0.0002
+
+Interpretation:
+  Domain gap indicates how much performance can be recovered with adaptation.
+
+------------------------------------------------------------------------
+PERCEPTUAL QUALITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  SSIM (Higher is better):  0.713818
+  FID  (Lower is better):   34.0092
+
+PDGM Domain:
+  SSIM (Higher is better):  0.699261
+  FID  (Lower is better):   53.6872
+
+Interpretation:
+  SSIM measures structural similarity (0-1 scale)
+  FID measures distribution distance (lower is better)
+
+------------------------------------------------------------------------
+FILES GENERATED
+------------------------------------------------------------------------
+This summary:      /home/j98my/Evaluation/results/source_only/EVALUATION_SUMMARY_20260201_182824.txt
+Master log:        /home/j98my/Evaluation/results/source_only/evaluation_20260201_182824.log
+GBM CNN results:   /home/j98my/Evaluation/results/source_only/cnn_evaluation_gbm_20260201_182824.txt
+GBM CNN JSON:      /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_SOURCE_ONLY/final_samples/gbm/enhanced_evaluation_results.json
+PDGM CNN results:  /home/j98my/Evaluation/results/source_only/cnn_evaluation_pdgm_20260201_182824.txt
+PDGM CNN JSON:     /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_SOURCE_ONLY/final_samples/pdgm/enhanced_evaluation_results.json
+FID/SSIM results:  /home/j98my/Evaluation/results/source_only/fid_ssim_20260201_182824.txt
+
+========================================================================

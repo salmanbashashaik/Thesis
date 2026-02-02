@@ -1,0 +1,77 @@
+
+======================================================================
+FID/SSIM EVALUATION
+======================================================================
+
+Domains to evaluate:
+  ✓ GBM
+  ✓ PDGM
+
+
+--- Evaluating Dataset ---
+  Synth:    /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test2_cfg12/final_samples/gbm
+  Original: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+----------------------------
+Found 16 synthetic patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test2_cfg12/final_samples/gbm
+[MAP] s00000 (sid=UPENN-GBM-00078_11) -> UPENN-GBM-00078_11
+[MAP] s00001 (sid=UPENN-GBM-00549_11) -> UPENN-GBM-00549_11
+[MAP] s00002 (sid=UPENN-GBM-00303_11) -> UPENN-GBM-00303_11
+[MAP] s00003 (sid=UPENN-GBM-00326_11) -> UPENN-GBM-00326_11
+[MAP] s00004 (sid=UPENN-GBM-00008_11) -> UPENN-GBM-00008_11
+[MAP] s00005 (sid=UPENN-GBM-00531_11) -> UPENN-GBM-00531_11
+[MAP] s00006 (sid=UPENN-GBM-00287_11) -> UPENN-GBM-00287_11
+[MAP] s00007 (sid=UPENN-GBM-00248_11) -> UPENN-GBM-00248_11
+[MAP] s00008 (sid=UPENN-GBM-00014_11) -> UPENN-GBM-00014_11
+[MAP] s00009 (sid=UPENN-GBM-00374_11) -> UPENN-GBM-00374_11
+[MAP] s00010 (sid=UPENN-GBM-00320_11) -> UPENN-GBM-00320_11
+[MAP] s00011 (sid=UPENN-GBM-00094_11) -> UPENN-GBM-00094_11
+[MAP] s00012 (sid=UPENN-GBM-00068_11) -> UPENN-GBM-00068_11
+[MAP] s00013 (sid=UPENN-GBM-00040_11) -> UPENN-GBM-00040_11
+[MAP] s00014 (sid=UPENN-GBM-00442_11) -> UPENN-GBM-00442_11
+[MAP] s00015 (sid=UPENN-GBM-00257_11) -> UPENN-GBM-00257_11
+[MAP] Mapped 16/16 synth folders (unmapped=0, missing_files=0).
+Building slice index (depth=min(orig,synth))...
+Built index: 1792 total slices from 16 mapped patients.
+Running evaluation on 1792 slices...
+Evaluating gbm:   0%|          | 0/56 [00:00<?, ?it/s]Evaluating gbm:   2%|▏         | 1/56 [00:03<02:56,  3.21s/it]Evaluating gbm:   5%|▌         | 3/56 [00:03<00:46,  1.15it/s]Evaluating gbm:   9%|▉         | 5/56 [00:05<00:52,  1.03s/it]Evaluating gbm:  12%|█▎        | 7/56 [00:05<00:30,  1.60it/s]Evaluating gbm:  16%|█▌        | 9/56 [00:08<00:41,  1.14it/s]Evaluating gbm:  20%|█▉        | 11/56 [00:08<00:26,  1.68it/s]Evaluating gbm:  23%|██▎       | 13/56 [00:11<00:36,  1.18it/s]Evaluating gbm:  27%|██▋       | 15/56 [00:11<00:24,  1.68it/s]Evaluating gbm:  30%|███       | 17/56 [00:14<00:32,  1.21it/s]Evaluating gbm:  34%|███▍      | 19/56 [00:14<00:21,  1.69it/s]Evaluating gbm:  38%|███▊      | 21/56 [00:16<00:28,  1.24it/s]Evaluating gbm:  41%|████      | 23/56 [00:16<00:19,  1.72it/s]Evaluating gbm:  45%|████▍     | 25/56 [00:19<00:24,  1.24it/s]Evaluating gbm:  48%|████▊     | 27/56 [00:19<00:16,  1.71it/s]Evaluating gbm:  52%|█████▏    | 29/56 [00:22<00:21,  1.24it/s]Evaluating gbm:  55%|█████▌    | 31/56 [00:22<00:14,  1.72it/s]Evaluating gbm:  59%|█████▉    | 33/56 [00:25<00:18,  1.25it/s]Evaluating gbm:  62%|██████▎   | 35/56 [00:25<00:12,  1.72it/s]Evaluating gbm:  66%|██████▌   | 37/56 [00:27<00:15,  1.24it/s]Evaluating gbm:  70%|██████▉   | 39/56 [00:28<00:09,  1.71it/s]Evaluating gbm:  73%|███████▎  | 41/56 [00:30<00:12,  1.24it/s]Evaluating gbm:  77%|███████▋  | 43/56 [00:30<00:07,  1.72it/s]Evaluating gbm:  80%|████████  | 45/56 [00:33<00:08,  1.23it/s]Evaluating gbm:  84%|████████▍ | 47/56 [00:33<00:05,  1.70it/s]Evaluating gbm:  86%|████████▌ | 48/56 [00:33<00:04,  1.97it/s]Evaluating gbm:  88%|████████▊ | 49/56 [00:36<00:06,  1.07it/s]Evaluating gbm:  91%|█████████ | 51/56 [00:36<00:03,  1.63it/s]Evaluating gbm:  95%|█████████▍| 53/56 [00:39<00:02,  1.17it/s]Evaluating gbm:  98%|█████████▊| 55/56 [00:39<00:00,  1.68it/s]Evaluating gbm: 100%|██████████| 56/56 [00:39<00:00,  1.42it/s]
+Evaluation complete.
+
+--- Evaluating Dataset ---
+  Synth:    /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test2_cfg12/final_samples/pdgm
+  Original: /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+----------------------------
+Found 16 synthetic patient folders in /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test2_cfg12/final_samples/pdgm
+[MAP] s00000 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00001 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00002 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00003 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00004 (sid=UCSF-PDGM-0170) -> UCSF-PDGM-0170
+[MAP] s00005 (sid=UCSF-PDGM-0059) -> UCSF-PDGM-0059
+[MAP] s00006 (sid=UCSF-PDGM-0023) -> UCSF-PDGM-0023
+[MAP] s00007 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00008 (sid=UCSF-PDGM-0024) -> UCSF-PDGM-0024
+[MAP] s00009 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] s00010 (sid=UCSF-PDGM-0013) -> UCSF-PDGM-0013
+[MAP] s00011 (sid=UCSF-PDGM-0537) -> UCSF-PDGM-0537
+[MAP] s00012 (sid=UCSF-PDGM-0022) -> UCSF-PDGM-0022
+[MAP] s00013 (sid=UCSF-PDGM-0018) -> UCSF-PDGM-0018
+[MAP] s00014 (sid=UCSF-PDGM-0020) -> UCSF-PDGM-0020
+[MAP] s00015 (sid=UCSF-PDGM-0026) -> UCSF-PDGM-0026
+[MAP] Mapped 16/16 synth folders (unmapped=0, missing_files=0).
+Building slice index (depth=min(orig,synth))...
+Built index: 1792 total slices from 16 mapped patients.
+Running evaluation on 1792 slices...
+Evaluating pdgm:   0%|          | 0/56 [00:00<?, ?it/s]Evaluating pdgm:   2%|▏         | 1/56 [00:02<02:39,  2.89s/it]Evaluating pdgm:   5%|▌         | 3/56 [00:03<00:42,  1.26it/s]Evaluating pdgm:   9%|▉         | 5/56 [00:05<00:54,  1.07s/it]Evaluating pdgm:  12%|█▎        | 7/56 [00:05<00:31,  1.55it/s]Evaluating pdgm:  16%|█▌        | 9/56 [00:08<00:42,  1.12it/s]Evaluating pdgm:  20%|█▉        | 11/56 [00:08<00:27,  1.66it/s]Evaluating pdgm:  23%|██▎       | 13/56 [00:11<00:36,  1.18it/s]Evaluating pdgm:  27%|██▋       | 15/56 [00:11<00:24,  1.68it/s]Evaluating pdgm:  30%|███       | 17/56 [00:14<00:32,  1.20it/s]Evaluating pdgm:  34%|███▍      | 19/56 [00:14<00:22,  1.68it/s]Evaluating pdgm:  38%|███▊      | 21/56 [00:16<00:28,  1.22it/s]Evaluating pdgm:  41%|████      | 23/56 [00:17<00:19,  1.69it/s]Evaluating pdgm:  45%|████▍     | 25/56 [00:19<00:25,  1.22it/s]Evaluating pdgm:  48%|████▊     | 27/56 [00:19<00:17,  1.68it/s]Evaluating pdgm:  52%|█████▏    | 29/56 [00:22<00:22,  1.21it/s]Evaluating pdgm:  55%|█████▌    | 31/56 [00:22<00:14,  1.67it/s]Evaluating pdgm:  59%|█████▉    | 33/56 [00:25<00:18,  1.21it/s]Evaluating pdgm:  62%|██████▎   | 35/56 [00:25<00:12,  1.67it/s]Evaluating pdgm:  66%|██████▌   | 37/56 [00:28<00:15,  1.22it/s]Evaluating pdgm:  68%|██████▊   | 38/56 [00:28<00:12,  1.44it/s]Evaluating pdgm:  71%|███████▏  | 40/56 [00:28<00:07,  2.07it/s]Evaluating pdgm:  73%|███████▎  | 41/56 [00:31<00:13,  1.13it/s]Evaluating pdgm:  75%|███████▌  | 42/56 [00:31<00:09,  1.40it/s]Evaluating pdgm:  79%|███████▊  | 44/56 [00:31<00:05,  2.15it/s]Evaluating pdgm:  82%|████████▏ | 46/56 [00:33<00:07,  1.28it/s]Evaluating pdgm:  86%|████████▌ | 48/56 [00:34<00:04,  1.84it/s]Evaluating pdgm:  88%|████████▊ | 49/56 [00:36<00:06,  1.07it/s]Evaluating pdgm:  89%|████████▉ | 50/56 [00:36<00:04,  1.32it/s]Evaluating pdgm:  93%|█████████▎| 52/56 [00:36<00:01,  2.02it/s]Evaluating pdgm:  95%|█████████▍| 53/56 [00:39<00:02,  1.08it/s]Evaluating pdgm:  96%|█████████▋| 54/56 [00:39<00:01,  1.35it/s]Evaluating pdgm: 100%|██████████| 56/56 [00:39<00:00,  2.14it/s]Evaluating pdgm: 100%|██████████| 56/56 [00:39<00:00,  1.41it/s]
+Evaluation complete.
+
+
+--- 📊 Final Evaluation Summary ---
+--------------------------------------
+Dataset: GBM
+  SSIM (Higher is better):  0.707331
+  FID (Lower is better):    43.5883
+--------------------------------------
+Dataset: PDGM
+  SSIM (Higher is better):  0.719861
+  FID (Lower is better):    50.0958
+--------------------------------------

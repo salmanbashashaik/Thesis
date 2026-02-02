@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/latent_stats.py
 
@@ -18,6 +22,7 @@ The BIG gotcha:
   If we want change the VAE (train more, load a different checkpoint, etc.), recompute stats.
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 from typing import Dict, Optional
 
@@ -36,6 +41,7 @@ from ldm3d.data import VolFolder
 # ESTIMATION
 # ----------------------------
 @torch.no_grad()
+# Function: `estimate_latent_stats` implements a reusable processing step.
 def estimate_latent_stats(
     dl,
     vae: VAE3D,
@@ -82,7 +88,9 @@ def estimate_latent_stats(
     # Total number of voxels accumulated per channel (same for each channel)
     n = 0
 
+    # Control-flow branch for conditional or iterative execution.
     for i, (x, _, _) in enumerate(dl):
+        # Control-flow branch for conditional or iterative execution.
         if i >= max_batches:
             break
 
@@ -93,6 +101,7 @@ def estimate_latent_stats(
         mu, logvar = vae.enc(x)
 
         # Choose latent definition depending on training design
+        # Control-flow branch for conditional or iterative execution.
         if use_posterior_noise:
             # Clamp logvar to prevent extreme std values from destabilizing stats
             logvar = torch.clamp(logvar, -20.0, 10.0)
@@ -109,6 +118,7 @@ def estimate_latent_stats(
         zc = z.permute(1, 0, 2, 3, 4).contiguous().view(z.shape[1], -1)
 
         # Initialize accumulators on first batch, then accumulate sums
+        # Control-flow branch for conditional or iterative execution.
         if sum_c is None:
             sum_c = zc.sum(dim=1)              # [zC]
             sumsq_c = (zc ** 2).sum(dim=1)     # [zC]
@@ -135,13 +145,20 @@ def estimate_latent_stats(
     print("      std :", std.detach().cpu().numpy())
 
     # IMPORTANT: store as [zC] on CPU for portability across devices
-    return {"mean": mean.detach().cpu(), "std": std.detach().cpu()}
+    # Return the computed value to the caller.
+    return {
+        "mean": mean.detach().cpu(),
+        "std": std.detach().cpu(),
+        "use_posterior_noise": bool(use_posterior_noise),
+    }
+
 
 
 # ----------------------------
 # RECOMPUTE + SAVE (CONVENIENCE)
 # ----------------------------
 @torch.no_grad()
+# Function: `recompute_and_save_latent_stats` implements a reusable processing step.
 def recompute_and_save_latent_stats(
     outdir: str,
     gbm_root: str,
@@ -199,12 +216,14 @@ def recompute_and_save_latent_stats(
     torch.save(stats, save_path)
     print(f"[SAVE] Saved latent stats -> {save_path}")
 
+    # Return the computed value to the caller.
     return stats
 
 
 # ----------------------------
 # SHAPE/DEVICE SAFE HELPERS
 # ----------------------------
+# Function: `_as_chan_vec` implements a reusable processing step.
 def _as_chan_vec(v: torch.Tensor, zc: int) -> torch.Tensor:
     """
     Convert an input tensor `v` into a per-channel vector of shape [zC].
@@ -224,44 +243,63 @@ def _as_chan_vec(v: torch.Tensor, zc: int) -> torch.Tensor:
 
     If `v` cannot be coerced into [zC], a RuntimeError is raised.
     """
+    # Control-flow branch for conditional or iterative execution.
     if not torch.is_tensor(v):
         raise TypeError("latent stats must be torch.Tensors")
 
     # Already correct
+    # Control-flow branch for conditional or iterative execution.
     if v.ndim == 1 and v.numel() == zc:
+        # Return the computed value to the caller.
         return v
 
+    # Control-flow branch for conditional or iterative execution.
     if v.ndim == 5:
         # channel-first: [B?, zC, D, H, W]
+        # Control-flow branch for conditional or iterative execution.
         if v.shape[1] == zc:
             # If it's already broadcast-shape like [1,zC,1,1,1], collapse cleanly
+            # Control-flow branch for conditional or iterative execution.
             if v.shape[2:] == (1, 1, 1):
+                # Return the computed value to the caller.
                 return v[0, :, 0, 0, 0]
             # Otherwise reduce over batch+spatial dims to get [zC]
+            # Return the computed value to the caller.
             return v.mean(dim=(0, 2, 3, 4))  # -> [zC]
 
         # channel-last: [B, D, H, W, zC]
+        # Control-flow branch for conditional or iterative execution.
         if v.shape[-1] == zc:
             # Broadcast-shape like [1,1,1,1,zC]
+            # Control-flow branch for conditional or iterative execution.
             if v.shape[0] == 1 and v.shape[1:4] == (1, 1, 1):
+                # Return the computed value to the caller.
                 return v[0, 0, 0, 0, :]
             # Reduce over batch+spatial dims
+            # Return the computed value to the caller.
             return v.mean(dim=(0, 1, 2, 3))
 
+    # Control-flow branch for conditional or iterative execution.
     if v.ndim == 4 and v.shape[0] == zc:
         # channel-first without batch: [zC, D, H, W]
+        # Control-flow branch for conditional or iterative execution.
         if v.shape[1:] == (1, 1, 1):
+            # Return the computed value to the caller.
             return v[:, 0, 0, 0]
+        # Return the computed value to the caller.
         return v.mean(dim=(1, 2, 3))
 
     # last resort: flatten and see if it matches exactly zC
     flat = v.reshape(-1)
+    # Control-flow branch for conditional or iterative execution.
     if flat.numel() == zc:
+        # Return the computed value to the caller.
         return flat
 
     raise RuntimeError(f"latent stat has incompatible shape {tuple(v.shape)} for zC={zc}")
 
 
+# Function: `_reshape_lat_stats` implements a reusable processing step.
 def _reshape_lat_stats(v: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
     """
     Reshape a latent-stat vector into a broadcastable tensor matching z.
@@ -279,9 +317,11 @@ def _reshape_lat_stats(v: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
     """
     zc = z.shape[1]
     v = _as_chan_vec(v, zc).to(device=z.device, dtype=z.dtype)
+    # Return the computed value to the caller.
     return v.view(1, zc, 1, 1, 1)
 
 
+# Function: `normalize_latents` implements a reusable processing step.
 def normalize_latents(z: torch.Tensor, mean: torch.Tensor, std: torch.Tensor) -> torch.Tensor:
     """
     Normalize latent tensor z using per-channel mean/std.
@@ -294,9 +334,11 @@ def normalize_latents(z: torch.Tensor, mean: torch.Tensor, std: torch.Tensor) ->
     """
     m = _reshape_lat_stats(mean, z)
     s = _reshape_lat_stats(std, z)
+    # Return the computed value to the caller.
     return (z - m) / (s + 1e-6)
 
 
+# Function: `denormalize_latents` implements a reusable processing step.
 def denormalize_latents(z_norm: torch.Tensor, mean: torch.Tensor, std: torch.Tensor) -> torch.Tensor:
     """
     Invert normalization to recover original latent scale.
@@ -305,12 +347,14 @@ def denormalize_latents(z_norm: torch.Tensor, mean: torch.Tensor, std: torch.Ten
     """
     m = _reshape_lat_stats(mean, z_norm)
     s = _reshape_lat_stats(std, z_norm)
+    # Return the computed value to the caller.
     return z_norm * (s + 1e-6) + m
 
 
 # ----------------------------
 # LOAD CACHED
 # ----------------------------
+# Function: `maybe_load_latent_stats` implements a reusable processing step.
 def maybe_load_latent_stats(outdir: str) -> Optional[Dict[str, torch.Tensor]]:
     """
     Try to load cached latent stats from {outdir}/latent_stats.pt.
@@ -329,17 +373,27 @@ def maybe_load_latent_stats(outdir: str) -> Optional[Dict[str, torch.Tensor]]:
       if stats is None: stats = estimate_latent_stats(...); save(...)
     """
     stats_path = f"{outdir}/latent_stats.pt"
+    # Control-flow branch for conditional or iterative execution.
     try:
         d = torch.load(stats_path, map_location="cpu")
+        # Control-flow branch for conditional or iterative execution.
         if isinstance(d, dict) and "mean" in d and "std" in d:
             # Ensure tensors
+            # Control-flow branch for conditional or iterative execution.
             if not torch.is_tensor(d["mean"]):
                 d["mean"] = torch.tensor(d["mean"])
+            # Control-flow branch for conditional or iterative execution.
             if not torch.is_tensor(d["std"]):
                 d["std"] = torch.tensor(d["std"])
+            # Control-flow branch for conditional or iterative execution.
+            if "use_posterior_noise" not in d:
+                d["use_posterior_noise"] = None
             print(f"[LOAD] Loaded latent stats: {stats_path}")
+            # Return the computed value to the caller.
             return d
+    # Control-flow branch for conditional or iterative execution.
     except Exception:
         # Intentionally quiet: caller decides whether to recompute
         pass
+    # Return the computed value to the caller.
     return None

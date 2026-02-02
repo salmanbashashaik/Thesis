@@ -1,0 +1,66 @@
+========================================================================
+SYNTHETIC IMAGE EVALUATION SUMMARY
+========================================================================
+
+Evaluation Date: Fri 30 Jan 2026 11:05:39 PM AST
+
+------------------------------------------------------------------------
+CONFIGURATION
+------------------------------------------------------------------------
+Domains Evaluated:
+  GBM:
+    Synthetic Root: /home/j98my/models/runs/cgan3disc_64/gbm
+    Original Root:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+  PDGM:
+    Synthetic Root: /home/j98my/models/runs/cgan3disc_64/pdgm
+    Original Root:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+
+CNN Model:           /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+Output Directory:    /home/j98my/Evaluation/results/cgan3disc
+
+Image Size:          224
+Batch Size:          32
+Device:              cuda
+Use Resized:         Yes
+
+------------------------------------------------------------------------
+CNN TRANSFERABILITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  AUC (no adaptation):     0.933
+  Domain Gap:              -0.0152
+
+PDGM Domain:
+  AUC (no adaptation):     0.866
+  Domain Gap:              -0.0365
+
+Interpretation:
+  Domain gap indicates how much performance can be recovered with adaptation.
+
+------------------------------------------------------------------------
+PERCEPTUAL QUALITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  SSIM (Higher is better):  0.676765
+  FID  (Lower is better):   79.6563
+
+PDGM Domain:
+  SSIM (Higher is better):  0.680950
+  FID  (Lower is better):   73.5052
+
+Interpretation:
+  SSIM measures structural similarity (0-1 scale)
+  FID measures distribution distance (lower is better)
+
+------------------------------------------------------------------------
+FILES GENERATED
+------------------------------------------------------------------------
+This summary:      /home/j98my/Evaluation/results/cgan3disc/EVALUATION_SUMMARY_20260130_222847.txt
+Master log:        /home/j98my/Evaluation/results/cgan3disc/evaluation_20260130_222847.log
+GBM CNN results:   /home/j98my/Evaluation/results/cgan3disc/cnn_evaluation_gbm_20260130_222847.txt
+GBM CNN JSON:      /home/j98my/models/runs/cgan3disc_64/gbm/enhanced_evaluation_results.json
+PDGM CNN results:  /home/j98my/Evaluation/results/cgan3disc/cnn_evaluation_pdgm_20260130_222847.txt
+PDGM CNN JSON:     /home/j98my/models/runs/cgan3disc_64/pdgm/enhanced_evaluation_results.json
+FID/SSIM results:  /home/j98my/Evaluation/results/cgan3disc/fid_ssim_20260130_222847.txt
+
+========================================================================

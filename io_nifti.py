@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/io_nifti.py
 
@@ -17,6 +21,7 @@ Design goals of this module:
     so we can visually confirm preprocessing is correct (huge time-saver).
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import os
@@ -32,6 +37,7 @@ from ldm3d.config import IMAGE_SIZE, DEVICE
 # ----------------------------
 # LOAD VOLUME (ROBUST)
 # ----------------------------
+# Function: `load_vol_safe` implements a reusable processing step.
 def load_vol_safe(path: str) -> np.ndarray:
     """
     Load a NIfTI image volume from disk and convert it into a normalized tensor-ready array.
@@ -61,6 +67,7 @@ def load_vol_safe(path: str) -> np.ndarray:
         volume of shape [1, IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE] filled with -1.0.
         This prevents training crashes due to a single bad input.
     """
+    # Control-flow branch for conditional or iterative execution.
     try:
         # Load NIfTI file
         img = nib.load(path)
@@ -70,11 +77,13 @@ def load_vol_safe(path: str) -> np.ndarray:
         arr = np.nan_to_num(arr)
 
         # Ensure channel dimension exists for consistent downstream handling
+        # Control-flow branch for conditional or iterative execution.
         if arr.ndim == 3:
             arr = arr[None]  # [1, D, H, W]
 
         # Compute normalization statistics only on non-zero voxels (foreground-ish)
         mask = arr > 0
+        # Control-flow branch for conditional or iterative execution.
         if mask.sum() > 0:
             # Robust range estimate using percentiles
             mn = np.percentile(arr[mask], 1.0)
@@ -83,6 +92,7 @@ def load_vol_safe(path: str) -> np.ndarray:
             # Clip to robust range to suppress extreme outliers
             arr = np.clip(arr, mn, mx)
 
+            # Control-flow branch for conditional or iterative execution.
             if mx - mn > 1e-6:
                 # Scale to [0,1] then shift to [-1,1]
                 arr = (arr - mn) / (mx - mn)   # [0,1]
@@ -94,11 +104,14 @@ def load_vol_safe(path: str) -> np.ndarray:
             # Entire volume is non-positive -> treat as empty/invalid and return "all black"
             arr = np.zeros_like(arr) - 1.0
 
+        # Return the computed value to the caller.
         return arr.astype(np.float32)
 
+    # Control-flow branch for conditional or iterative execution.
     except Exception as e:
         # Hard failure path: return safe fallback cube so the pipeline doesn't explode
         print(f"[ERR] Failed to load {path}: {e}")
+        # Return the computed value to the caller.
         return (
             np.zeros((1, IMAGE_SIZE, IMAGE_SIZE, IMAGE_SIZE), dtype=np.float32) - 1.0
         )
@@ -107,6 +120,7 @@ def load_vol_safe(path: str) -> np.ndarray:
 # ----------------------------
 # LOAD MASK (ROBUST)
 # ----------------------------
+# Function: `load_mask_safe` implements a reusable processing step.
 def load_mask_safe(path: str) -> np.ndarray:
     """
     Load a tumor/lesion mask from disk and return a clean binary mask.
@@ -135,17 +149,20 @@ def load_mask_safe(path: str) -> np.ndarray:
     arr = np.nan_to_num(arr)
 
     # Ensure channel dimension for consistency
+    # Control-flow branch for conditional or iterative execution.
     if arr.ndim == 3:
         arr = arr[None]  # [1,D,H,W]
 
     # Binarize: anything > 0 is treated as foreground
     arr = (arr > 0).astype(np.float32)
+    # Return the computed value to the caller.
     return arr
 
 
 # ----------------------------
 # SAVE NIFTI
 # ----------------------------
+# Function: `save_nifti` implements a reusable processing step.
 def save_nifti(tensor_3d: torch.Tensor, path: str, verbose: bool = True) -> None:
     """
     Save a single-channel 3D torch tensor as a NIfTI file.
@@ -175,6 +192,7 @@ def save_nifti(tensor_3d: torch.Tensor, path: str, verbose: bool = True) -> None
     """
     # Convert tensor to numpy for nibabel
     arr = tensor_3d.detach().cpu().numpy()
+    # Control-flow branch for conditional or iterative execution.
     if arr.ndim == 4:
         # If [1,D,H,W], drop channel dimension
         arr = arr[0]
@@ -183,11 +201,13 @@ def save_nifti(tensor_3d: torch.Tensor, path: str, verbose: bool = True) -> None
     arr = (arr + 1.0) / 2.0
     arr = np.clip(arr, 0.0, 1.0)
 
+    # Control-flow branch for conditional or iterative execution.
     if verbose:
         mn, mx, mean = float(arr.min()), float(arr.max()), float(arr.mean())
 
         # A near-zero mean often means the saved image will appear mostly black
         # (common symptom of a bug in normalization or decoding)
+        # Control-flow branch for conditional or iterative execution.
         if mean < 1e-3:
             print(f"[CRITICAL WARN] SAVED IMAGE LOOKS BLACK (mean={mean:.6f}): {path}")
         else:
@@ -200,6 +220,7 @@ def save_nifti(tensor_3d: torch.Tensor, path: str, verbose: bool = True) -> None
 # ----------------------------
 # DATA SANITY CHECK
 # ----------------------------
+# Function: `validate_input_data` implements a reusable processing step.
 def validate_input_data(dataloader: DataLoader, outdir: str) -> None:
     """
     Perform an immediate end-to-end check of the dataset + dataloader pipeline.
@@ -224,6 +245,7 @@ def validate_input_data(dataloader: DataLoader, outdir: str) -> None:
         That’s intentional: if our pipeline can’t load one batch, training will not work.
     """
     print("--- RUNNING IMMEDIATE DATA SANITY CHECK ---")
+    # Control-flow branch for conditional or iterative execution.
     try:
         # Grab first batch from dataloader
         x, _, sid = next(iter(dataloader))
@@ -238,6 +260,7 @@ def validate_input_data(dataloader: DataLoader, outdir: str) -> None:
         save_nifti(x[0, 0], out_path, verbose=True)
 
         print("--- SANITY CHECK COMPLETE: CHECK FILE NOW ---")
+    # Control-flow branch for conditional or iterative execution.
     except Exception as e:
         # If this fails, training will almost certainly fail too.
         print(f"[CRITICAL FAILURE] Data Loader crashed: {e}")

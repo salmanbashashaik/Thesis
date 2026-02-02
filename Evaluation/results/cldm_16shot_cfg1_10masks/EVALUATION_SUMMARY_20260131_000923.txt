@@ -1,0 +1,68 @@
+
+THE MODELS USED WAS OF THE 16SHOT TRAINING BUT THE GENERATED IMAGES ONLY CONSISTS OF 10 MASKS USED AS TUMORS
+========================================================================
+SYNTHETIC IMAGE EVALUATION SUMMARY
+========================================================================
+
+Evaluation Date: Sat 31 Jan 2026 12:16:02 AM AST
+
+------------------------------------------------------------------------
+CONFIGURATION
+------------------------------------------------------------------------
+Domains Evaluated:
+  GBM:
+    Synthetic Root: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm
+    Original Root:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+  PDGM:
+    Synthetic Root: /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm
+    Original Root:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+
+CNN Model:           /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+Output Directory:    /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1
+
+Image Size:          224
+Batch Size:          32
+Device:              cuda
+Use Resized:         Yes
+
+------------------------------------------------------------------------
+CNN TRANSFERABILITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  AUC (no adaptation):     0.834
+  Domain Gap:              -0.0015
+
+PDGM Domain:
+  AUC (no adaptation):     0.940
+  Domain Gap:              -0.0013
+
+Interpretation:
+  Domain gap indicates how much performance can be recovered with adaptation.
+
+------------------------------------------------------------------------
+PERCEPTUAL QUALITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  SSIM (Higher is better):  0.707661
+  FID  (Lower is better):   43.4667
+
+PDGM Domain:
+  SSIM (Higher is better):  0.717011
+  FID  (Lower is better):   48.8039
+
+Interpretation:
+  SSIM measures structural similarity (0-1 scale)
+  FID measures distribution distance (lower is better)
+
+------------------------------------------------------------------------
+FILES GENERATED
+------------------------------------------------------------------------
+This summary:      /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/EVALUATION_SUMMARY_20260131_000923.txt
+Master log:        /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/evaluation_20260131_000923.log
+GBM CNN results:   /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/cnn_evaluation_gbm_20260131_000923.txt
+GBM CNN JSON:      /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/gbm/enhanced_evaluation_results.json
+PDGM CNN results:  /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/cnn_evaluation_pdgm_20260131_000923.txt
+PDGM CNN JSON:     /home/j98my/models/runs/ldm_3d_diffuse_glioma/10_shot_INFERENCE_TEST/test1_cfg15/final_samples/pdgm/enhanced_evaluation_results.json
+FID/SSIM results:  /home/j98my/Evaluation/results/cldm_10shot_inference_cfg1/fid_ssim_20260131_000923.txt
+
+========================================================================

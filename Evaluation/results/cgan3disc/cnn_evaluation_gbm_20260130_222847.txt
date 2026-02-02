@@ -1,0 +1,114 @@
+[INFO] Using specified domain: gbm
+[INFO] Using default mask root for gbm: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+Found 64 patient folders in /home/j98my/models/runs/cgan3disc_64/gbm
+Using masks from: /home/j98my/Pre-Processing/prep/gbm_all_aligned
+Domain: GBM
+Built index: 2998 positive slices, 4170 negative slices from 64 patients.
+Loading model from /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+
+======================================================================
+ENHANCED EVALUATION WITH DOMAIN GAP ANALYSIS
+======================================================================
+
+STEP 1: Domain Adaptation Analysis
+This separates domain gap from quality issues
+----------------------------------------------------------------------
+
+======================================================================
+DOMAIN ADAPTATION ANALYSIS
+======================================================================
+
+Adaptation set: 10 samples
+Test set: 7158 samples
+
+1. Evaluating WITHOUT adaptation...
+   AUC (no adaptation): 0.9328
+
+2. Adapting model on 10 samples...
+   Epoch 2/5, Loss: 0.0219
+   Epoch 4/5, Loss: 0.1310
+
+3. Evaluating WITH adaptation...
+   AUC (with adaptation): 0.9177
+
+======================================================================
+DOMAIN GAP ANALYSIS
+======================================================================
+AUC without adaptation: 0.9328
+AUC with adaptation:    0.9177
+Domain gap effect:      -0.0152
+
+Interpretation:
+  Small domain gap - performance is mostly limited by
+  intrinsic quality, not distribution shift.
+======================================================================
+
+STEP 2: Bootstrap Confidence Intervals
+This provides robust uncertainty estimates
+----------------------------------------------------------------------
+
+======================================================================
+BOOTSTRAP CONFIDENCE INTERVALS (1000 iterations)
+======================================================================
+
+Bootstrap Results:
+  Mean:      0.9330
+  Std Dev:   0.0027
+  Median:    0.9330
+  95% CI:    [0.9280, 0.9381]
+  Range:     [0.9236, 0.9421]
+======================================================================
+
+STEP 3: Stratified Evaluation
+This shows performance breakdown by subgroups
+----------------------------------------------------------------------
+
+======================================================================
+STRATIFIED EVALUATION
+======================================================================
+
+Stratified Metrics:
+  Overall AUC:                 0.9329
+  Patient-level AUC:           0.9303 ± 0.0656
+  Mean prob on positive:       0.8430
+  Median prob on positive:     0.9907
+  Mean prob on negative:       0.2246
+  Median prob on negative:     0.0597
+  N patients with both labels: 64
+======================================================================
+
+
+======================================================================
+FINAL SUMMARY REPORT
+======================================================================
+
+DOMAIN: GBM
+Synthetic samples: 64
+Total slices evaluated: 7168
+
+1. BASIC PERFORMANCE:
+   AUC: 0.9330 ± 0.0027
+   95% CI: [0.9280, 0.9381]
+
+2. DOMAIN GAP EFFECT:
+   AUC without adaptation: 0.9328
+   AUC with adaptation:    0.9177
+   Domain gap:             -0.0152
+   Interpretation: 0.015 of potential improvement
+                   is achievable with 10 samples
+
+3. PATIENT-LEVEL PERFORMANCE:
+   Patient AUC: 0.9303 ± 0.0656
+
+======================================================================
+RECOMMENDATIONS FOR PAPER:
+======================================================================
+Report Accuracy as: {'accuracy': 0.8316127232142857, 'balanced_accuracy': 0.8360575315598089, 'auc': 0.9329444249803626, 'sensitivity': 0.8632421614409607, 'specificity': 0.8088729016786571, 'f1': 0.8109039636534545, 'tp': 2588, 'tn': 3373, 'fp': 797, 'fn': 410}
+Report AUC as: 0.933 ± 0.003
+               [95% CI: 0.928, 0.938]
+
+Note that 0.015 AUC points are due to domain
+shift rather than quality, as evidenced by adaptation experiment.
+======================================================================
+
+Results saved to: /home/j98my/models/runs/cgan3disc_64/gbm/enhanced_evaluation_results.json

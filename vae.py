@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/vae.py
 
@@ -28,6 +32,7 @@ Notes about naming:
     encode/decode/forward, plus helper losses used by our training loop.
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import torch
@@ -38,6 +43,7 @@ import torch.nn.functional as F
 # ============================================================
 # POSTERIOR
 # ============================================================
+# Class definition: `DiagonalGaussian` encapsulates related model behavior.
 class DiagonalGaussian(nn.Module):
     """
     Reparameterization for spatial mu/logvar feature maps.
@@ -54,6 +60,7 @@ class DiagonalGaussian(nn.Module):
       - Encourages a smooth latent space (helpful for diffusion).
     """
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
         # Clamp log-variance to keep std in a numerically safe range.
         # Prevents exploding std (huge noise) or collapsing std (near-zero).
@@ -67,12 +74,14 @@ class DiagonalGaussian(nn.Module):
         eps = torch.randn_like(std)
 
         # Reparameterization trick: sample z from q(z|x).
+        # Return the computed value to the caller.
         return mu + std * eps
 
 
 # ============================================================
 # ENCODER (x4 downsample: 112 -> 28)
 # ============================================================
+# Class definition: `VAEEncoder3D` encapsulates related model behavior.
 class VAEEncoder3D(nn.Module):
     """
     Encoder network.
@@ -95,6 +104,7 @@ class VAEEncoder3D(nn.Module):
       - Diffusion in spatial latents behaves more like image diffusion (but 3D).
     """
 
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, z_channels: int = 8, base: int = 64):
         super().__init__()
 
@@ -126,15 +136,18 @@ class VAEEncoder3D(nn.Module):
         self.to_mu = nn.Conv3d(base * 4, z_channels, kernel_size=1)
         self.to_logvar = nn.Conv3d(base * 4, z_channels, kernel_size=1)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x: torch.Tensor):
         # Shared trunk produces high-level features for both mu/logvar heads.
         h = self.net(x)
+        # Return the computed value to the caller.
         return self.to_mu(h), self.to_logvar(h)
 
 
 # ============================================================
 # DECODER (x4 upsample: 28 -> 112)
 # ============================================================
+# Class definition: `VAEDecoder3D` encapsulates related model behavior.
 class VAEDecoder3D(nn.Module):
     """
     Decoder network.
@@ -157,6 +170,7 @@ class VAEDecoder3D(nn.Module):
       - Plays nicely with medical volumes (smoothness + stability).
     """
 
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, z_channels: int = 8, base: int = 64):
         super().__init__()
 
@@ -171,6 +185,7 @@ class VAEDecoder3D(nn.Module):
             nn.InstanceNorm3d(base * 4, affine=True),
         )
 
+        # Function: `up` implements a reusable processing step.
         def up(in_c: int, out_c: int):
             """
             One upsampling stage:
@@ -178,6 +193,7 @@ class VAEDecoder3D(nn.Module):
               - conv to learn features at the new resolution
               - nonlinearity + normalization
             """
+            # Return the computed value to the caller.
             return nn.Sequential(
                 # Trilinear upsample + conv is stable for 3D volumes.
                 nn.Upsample(scale_factor=2, mode="trilinear", align_corners=False),
@@ -200,16 +216,19 @@ class VAEDecoder3D(nn.Module):
             nn.Tanh(),
         )
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, z: torch.Tensor) -> torch.Tensor:
         # Lift latent to feature space, upsample twice, then project to image channels.
         h = self.pre(z)
         h = self.up(h)
+        # Return the computed value to the caller.
         return self.out(h)
 
 
 # ============================================================
 # FULL VAE
 # ============================================================
+# Class definition: `VAE3D` encapsulates related model behavior.
 class VAE3D(nn.Module):
     """
     Wrapper module that exposes the standard VAE interface.
@@ -224,32 +243,40 @@ class VAE3D(nn.Module):
       - diffusion training often uses mu as "z0" (deterministic) OR samples a noisy z0
         depending on use_posterior_noise.
     """
+    # Function: `__init__` implements a reusable processing step.
     def __init__(self, z_channels: int = 8, base: int = 64):
         super().__init__()
         self.enc = VAEEncoder3D(z_channels=z_channels, base=base)
         self.dec = VAEDecoder3D(z_channels=z_channels, base=base)
         self.posterior = DiagonalGaussian()
 
+    # Function: `encode` implements a reusable processing step.
     def encode(self, x: torch.Tensor):
         # Encode into distribution parameters, then sample a latent z.
         mu, logvar = self.enc(x)
         z = self.posterior(mu, logvar)
+        # Return the computed value to the caller.
         return z, mu, logvar
 
+    # Function: `decode` implements a reusable processing step.
     def decode(self, z: torch.Tensor) -> torch.Tensor:
         # Decode latent back to 3-channel MRI volume.
+        # Return the computed value to the caller.
         return self.dec(z)
 
+    # Function: `forward` implements a reusable processing step.
     def forward(self, x: torch.Tensor):
         # Full VAE pass: recon + sampled latent + distribution params.
         z, mu, logvar = self.encode(x)
         xhat = self.decode(z)
+        # Return the computed value to the caller.
         return xhat, z, mu, logvar
 
 
 # ============================================================
 # LOSSES / HELPERS
 # ============================================================
+# Function: `kl_loss` implements a reusable processing step.
 def kl_loss(mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
     """
     KL divergence term for a diagonal Gaussian posterior.
@@ -268,9 +295,11 @@ def kl_loss(mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
     # KL divergence between N(mu, sigma) and N(0,1), averaged over batch+spatial.
     logvar = torch.clamp(logvar, -20.0, 10.0)
     kl = 0.5 * (mu.pow(2) + logvar.exp() - 1.0 - logvar)
+    # Return the computed value to the caller.
     return kl.mean()
 
 
+# Function: `gradient_loss_3d` implements a reusable processing step.
 def gradient_loss_3d(x_hat: torch.Tensor, x: torch.Tensor) -> torch.Tensor:
     """
     Structure-preserving gradient loss.
@@ -286,16 +315,19 @@ def gradient_loss_3d(x_hat: torch.Tensor, x: torch.Tensor) -> torch.Tensor:
     Output:
       - A scalar loss (sum of L1 differences of gradients along x/y/z axes).
     """
+    # Function: `grad` implements a reusable processing step.
     def grad(t):
         # Finite differences along each spatial axis.
         dx = t[:, :, 1:, :, :] - t[:, :, :-1, :, :]
         dy = t[:, :, :, 1:, :] - t[:, :, :, :-1, :]
         dz = t[:, :, :, :, 1:] - t[:, :, :, :, :-1]
+        # Return the computed value to the caller.
         return dx, dy, dz
 
     gx_h, gy_h, gz_h = grad(x_hat)
     gx, gy, gz = grad(x)
 
+    # Return the computed value to the caller.
     return (
         F.l1_loss(gx_h, gx) +
         F.l1_loss(gy_h, gy) +
@@ -304,6 +336,7 @@ def gradient_loss_3d(x_hat: torch.Tensor, x: torch.Tensor) -> torch.Tensor:
 
 
 @torch.no_grad()
+# Function: `get_latent_z0` implements a reusable processing step.
 def get_latent_z0(
     vae: VAE3D,
     x: torch.Tensor,
@@ -331,10 +364,13 @@ def get_latent_z0(
     vae.eval()
     # Use encoder directly to avoid decoding overhead.
     mu, logvar = vae.enc(x)
+    # Control-flow branch for conditional or iterative execution.
     if use_posterior_noise:
         # Sample a noisy latent to match training stochasticity.
         logvar = torch.clamp(logvar, -20.0, 10.0)
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
+        # Return the computed value to the caller.
         return mu + std * eps
+    # Return the computed value to the caller.
     return mu

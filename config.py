@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# NOTE: This Python script is heavily commented to clarify intent and execution flow.
+# -----------------------------------------------------------------------------
+
 """
 ldm3d/config.py
 
@@ -6,6 +10,7 @@ Keep only stable, cross-module constants here.
 Runtime hyperparams still come from argparse in main.py.
 """
 
+# Import dependencies used by this module.
 from __future__ import annotations
 
 import os

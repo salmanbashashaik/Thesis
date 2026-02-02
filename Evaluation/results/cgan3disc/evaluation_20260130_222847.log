@@ -1,0 +1,132 @@
+[2026-01-30 22:28:47] ============================================================
+[2026-01-30 22:28:47] COMPREHENSIVE SYNTHETIC IMAGE EVALUATION
+[2026-01-30 22:28:47] ============================================================
+[2026-01-30 22:28:47] 
+[2026-01-30 22:28:47] Configuration:
+[2026-01-30 22:28:47]   Domains to evaluate:
+[2026-01-30 22:28:47]     - GBM
+[2026-01-30 22:28:47]     - PDGM
+[2026-01-30 22:28:47] 
+[2026-01-30 22:28:47]   GBM Paths:
+[2026-01-30 22:28:47]     Synthetic: /home/j98my/models/runs/cgan3disc_64/gbm
+[2026-01-30 22:28:47]     Original:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+[2026-01-30 22:28:47]   PDGM Paths:
+[2026-01-30 22:28:47]     Synthetic: /home/j98my/models/runs/cgan3disc_64/pdgm
+[2026-01-30 22:28:47]     Original:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+[2026-01-30 22:28:47] 
+[2026-01-30 22:28:47]   Mask root:          
+[2026-01-30 22:28:47]   CNN model:          /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+[2026-01-30 22:28:47]   Output directory:   /home/j98my/Evaluation/results/cgan3disc
+[2026-01-30 22:28:47]   Image size:         224
+[2026-01-30 22:28:47]   Batch size:         32
+[2026-01-30 22:28:47]   Device:             cuda
+[2026-01-30 22:28:47]   Use resized:        Yes
+[2026-01-30 22:28:47] 
+[2026-01-30 22:28:47] ============================================================
+[2026-01-30 22:28:47] STEP 1: CNN Transferability Evaluation
+[2026-01-30 22:28:47] ============================================================
+[2026-01-30 22:28:47] 
+[2026-01-30 22:28:47] Evaluating GBM domain...
+[2026-01-30 22:28:47] Command: python3 /home/j98my/Evaluation/test_using_cnn_cv_DS.py             --synth_root /home/j98my/models/runs/cgan3disc_64/gbm             --model_path /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --n_adapt 10             --n_bootstrap 1000             --domain gbm             --use_resized
+[2026-01-30 22:28:47] 
+[2026-01-30 22:45:20] ✅ GBM CNN evaluation completed
+[2026-01-30 22:45:20]   GBM AUC: 0.933, Domain gap: -0.0152
+[2026-01-30 22:45:20] 
+[2026-01-30 22:45:20] Evaluating PDGM domain...
+[2026-01-30 22:45:20] Command: python3 /home/j98my/Evaluation/test_using_cnn_cv_DS.py             --synth_root /home/j98my/models/runs/cgan3disc_64/pdgm             --model_path /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --n_adapt 10             --n_bootstrap 1000             --domain pdgm             --use_resized
+[2026-01-30 22:45:20] 
+[2026-01-30 22:58:50] ✅ PDGM CNN evaluation completed
+[2026-01-30 22:58:50]   PDGM AUC: 0.866, Domain gap: -0.0365
+[2026-01-30 22:58:50] 
+[2026-01-30 22:58:50] ============================================================
+[2026-01-30 22:58:50] STEP 2: FID/SSIM Perceptual Metrics
+[2026-01-30 22:58:50] ============================================================
+[2026-01-30 22:58:50] 
+[2026-01-30 22:58:50] Running FID/SSIM evaluation...
+[2026-01-30 22:58:50] Output will be saved to: /home/j98my/Evaluation/results/cgan3disc/fid_ssim_20260130_222847.txt
+[2026-01-30 22:58:50] 
+[2026-01-30 22:58:50] Command: python3 /home/j98my/Evaluation/test_using_fid_ssim.py             --synth_gbm_root /home/j98my/models/runs/cgan3disc_64/gbm             --original_gbm_root /home/j98my/Pre-Processing/prep/gbm_all_aligned             --synth_pdgm_root /home/j98my/models/runs/cgan3disc_64/pdgm             --original_pdgm_root /home/j98my/Pre-Processing/prep/pdgm_target_aligned             --img_size 224             --batch_size 32             --num_workers 4             --device cuda             --use_resized
+[2026-01-30 22:58:50] 
+[2026-01-30 23:05:39] ✅ FID/SSIM evaluation completed successfully
+[2026-01-30 23:05:39] Results saved to: /home/j98my/Evaluation/results/cgan3disc/fid_ssim_20260130_222847.txt
+[2026-01-30 23:05:39]   GBM  - SSIM: 0.676765, FID: 79.6563
+[2026-01-30 23:05:39]   PDGM - SSIM: 0.680950, FID: 73.5052
+[2026-01-30 23:05:39] 
+[2026-01-30 23:05:39] ============================================================
+[2026-01-30 23:05:39] STEP 3: Generating Summary Report
+[2026-01-30 23:05:39] ============================================================
+[2026-01-30 23:05:39] 
+========================================================================
+SYNTHETIC IMAGE EVALUATION SUMMARY
+========================================================================
+
+Evaluation Date: Fri 30 Jan 2026 11:05:39 PM AST
+
+------------------------------------------------------------------------
+CONFIGURATION
+------------------------------------------------------------------------
+Domains Evaluated:
+  GBM:
+    Synthetic Root: /home/j98my/models/runs/cgan3disc_64/gbm
+    Original Root:  /home/j98my/Pre-Processing/prep/gbm_all_aligned
+  PDGM:
+    Synthetic Root: /home/j98my/models/runs/cgan3disc_64/pdgm
+    Original Root:  /home/j98my/Pre-Processing/prep/pdgm_target_aligned
+
+CNN Model:           /home/j98my/models/runs/alexlite_dg_real_longrun/new_run/best.pt
+Output Directory:    /home/j98my/Evaluation/results/cgan3disc
+
+Image Size:          224
+Batch Size:          32
+Device:              cuda
+Use Resized:         Yes
+
+------------------------------------------------------------------------
+CNN TRANSFERABILITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  AUC (no adaptation):     0.933
+  Domain Gap:              -0.0152
+
+PDGM Domain:
+  AUC (no adaptation):     0.866
+  Domain Gap:              -0.0365
+
+Interpretation:
+  Domain gap indicates how much performance can be recovered with adaptation.
+
+------------------------------------------------------------------------
+PERCEPTUAL QUALITY METRICS
+------------------------------------------------------------------------
+GBM Domain:
+  SSIM (Higher is better):  0.676765
+  FID  (Lower is better):   79.6563
+
+PDGM Domain:
+  SSIM (Higher is better):  0.680950
+  FID  (Lower is better):   73.5052
+
+Interpretation:
+  SSIM measures structural similarity (0-1 scale)
+  FID measures distribution distance (lower is better)
+
+------------------------------------------------------------------------
+FILES GENERATED
+------------------------------------------------------------------------
+This summary:      /home/j98my/Evaluation/results/cgan3disc/EVALUATION_SUMMARY_20260130_222847.txt
+Master log:        /home/j98my/Evaluation/results/cgan3disc/evaluation_20260130_222847.log
+GBM CNN results:   /home/j98my/Evaluation/results/cgan3disc/cnn_evaluation_gbm_20260130_222847.txt
+GBM CNN JSON:      /home/j98my/models/runs/cgan3disc_64/gbm/enhanced_evaluation_results.json
+PDGM CNN results:  /home/j98my/Evaluation/results/cgan3disc/cnn_evaluation_pdgm_20260130_222847.txt
+PDGM CNN JSON:     /home/j98my/models/runs/cgan3disc_64/pdgm/enhanced_evaluation_results.json
+FID/SSIM results:  /home/j98my/Evaluation/results/cgan3disc/fid_ssim_20260130_222847.txt
+
+========================================================================
+[2026-01-30 23:05:39] 
+[2026-01-30 23:05:39] ============================================================
+[2026-01-30 23:05:39] ✅ EVALUATION PIPELINE COMPLETED
+[2026-01-30 23:05:39] ============================================================
+[2026-01-30 23:05:39] 
+[2026-01-30 23:05:39] Summary report saved to: /home/j98my/Evaluation/results/cgan3disc/EVALUATION_SUMMARY_20260130_222847.txt
+[2026-01-30 23:05:39] Full log saved to: /home/j98my/Evaluation/results/cgan3disc/evaluation_20260130_222847.log
+[2026-01-30 23:05:39] 

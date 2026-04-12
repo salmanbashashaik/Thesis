@@ -182,14 +182,16 @@ aldm-mri-synthesis/
 
 ## Pretrained Models
 
-Download pretrained checkpoints:
+Pretrained checkpoints are available upon request:
 
-| Model | Dataset | Epochs | Download |
-|-------|---------|--------|----------|
-| VAE | GBM | 200 | [Link](#) |
-| Diffusion (16-shot) | PDGM | 100 | [Link](#) |
-| Diffusion (10-shot) | PDGM | 100 | [Link](#) |
-| AlexLite-DG (CNN) | PDGM | - | [Link](#) |
+| Model | Dataset | Epochs | Size |
+|-------|---------|--------|------|
+| VAE | GBM | 200 | ~30 MB |
+| Diffusion U-Net (16-shot) | PDGM | 100 | ~152 MB |
+| EMA Weights (16-shot) | PDGM | 100 | ~152 MB |
+| Latent Stats | GBM | - | <1 MB |
+
+**To request checkpoints**: Please contact [salmanbasha.shaik@unb.ca]
 
 ---
 
@@ -266,6 +268,8 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 ---
 
 ## Acknowledgments
+
+This work was conducted as part of the **Analytics Everywhere Lab** at the University of New Brunswick.
 
 - Supervisor: Dr. Hung Cao, UNB
 - Computing resources provided by UNB Laboratory Server

@@ -1,0 +1,58 @@
+# Diffusion Configuration for 16-shot PDGM Adaptation
+
+model:
+  unet_base_channels: 64
+  timestep_embedding_dim: 256
+  attention_resolutions: [14, 7]
+  num_res_blocks: 2
+  channel_multipliers: [1, 2, 4]
+  use_group_norm: true
+  num_groups: 8
+
+diffusion:
+  timesteps: 1000
+  beta_schedule: linear
+  beta_start: 1.0e-4
+  beta_end: 2.0e-2
+  noise_schedule: linear
+
+training:
+  learning_rate: 2.0e-4
+  batch_size: 1
+  epochs: 100  # After 300 epochs on GBM
+  optimizer: AdamW
+  weight_decay: 1.0e-4
+  beta1: 0.9
+  beta2: 0.999
+  grad_clip_norm: 1.0
+  ema_decay: 0.999
+
+conditioning:
+  guidance_scale: 3.0
+  dropout_prob: 0.1
+  control_weight: 1.0
+  tumor_loss_weight: 2.0
+  use_controlnet: true
+  use_film_modulation: true
+
+latent_normalization:
+  enabled: true
+  num_batches: 400
+  epsilon: 1.0e-6
+  use_deterministic_latents: false
+
+data:
+  num_workers: 2
+  pin_memory: true
+  augmentation: false  # Minimal augmentation for few-shot
+
+checkpointing:
+  save_every: 25
+  keep_last_n: 5
+
+logging:
+  log_every: 5
+  tensorboard: true
+  sample_every: 25
+
+seed: 42

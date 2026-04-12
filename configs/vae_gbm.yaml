@@ -1,0 +1,41 @@
+# VAE Configuration for GBM Source Domain
+
+model:
+  latent_channels: 8
+  base_channels: 64
+  input_channels: 3  # T1, T2, FLAIR
+  spatial_dims: [112, 112, 112]
+  use_instance_norm: true
+
+training:
+  learning_rate: 1.0e-4
+  batch_size: 1
+  epochs: 200
+  optimizer: AdamW
+  weight_decay: 1.0e-4
+  beta1: 0.9
+  beta2: 0.999
+  grad_clip_norm: 1.0
+
+loss:
+  reconstruction_weight: 1.0
+  kl_weight: 1.0e-4
+  kl_warmup_fraction: 0.35
+  gradient_consistency_weight: 0.1
+
+data:
+  num_workers: 2
+  pin_memory: true
+  augmentation: true
+  augmentation_prob: 0.5
+
+checkpointing:
+  save_every: 50
+  keep_last_n: 5
+
+logging:
+  log_every: 10
+  tensorboard: true
+  sample_every: 50
+
+seed: 42

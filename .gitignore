@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Data
+data/raw/
+data/processed/
+*.nii
+*.nii.gz
+*.npy
+*.npz
+
+# Checkpoints
+checkpoints/**/*.pth
+checkpoints/**/*.pt
+!checkpoints/README.md
+
+# Outputs
+outputs/
+logs/
+
+# Environment
+.env
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+
+# Archive (internal use only)
+_archive/
+_old_code/

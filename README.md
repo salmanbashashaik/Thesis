@@ -3,288 +3,169 @@
 [![Paper](https://img.shields.io/badge/Paper-CAN--AI%202026-blue)](https://proceedings.mlr.press/v318/)
 [![License](https://img.shields.io/badge/License-CC%20BY%204.0-green.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-**Official implementation of "Anatomically-conditioned Latent Diffusion Model for Data-Efficient Few-Shot Cross-Domain 3D Glioma MRI Synthesis"**
+**Official implementation of _“Anatomically-conditioned Latent Diffusion Model for Data-Efficient Few-Shot Cross-Domain 3D Glioma MRI Synthesis”_ — accepted at the 39th Canadian Conference on Artificial Intelligence (CAN-AI 2026).**
 
-*Accepted at the 39th Canadian Conference on Artificial Intelligence (CAN-AI 2026)*
+ALDM transfers anatomical priors from a data-rich glioblastoma source domain to a data-scarce diffuse-glioma target domain to synthesize spatially coherent 3D MRI volumes with only **10–16 target examples**.
 
----
+## Highlights
 
-## Overview
-
-ALDM is a novel framework for synthesizing high-fidelity 3D volumetric MRI scans in extreme few-shot settings. By transferring anatomical priors from a data-rich glioblastoma (GBM) source domain to a data-scarce preoperative diffuse glioma (PDGM) target domain, ALDM achieves superior performance with only **16 target images**.
-
-### Key Features
-- **Few-shot learning**: Generates realistic MRI volumes with only 10-16 target samples
-- **Cross-domain transfer**: Leverages anatomical priors from GBM to synthesize PDGM scans
-- **3D volumetric synthesis**: Produces spatially coherent 112×112×112 volumes across T1, T2, and FLAIR modalities
-- **Anatomical conditioning**: Uses tumor masks via ControlNet for precise spatial control
-- **State-of-the-art results**: FID 85.40, AUC 0.987 on downstream classification
-
----
+- **Few-shot cross-domain generation:** target-domain synthesis with as few as 10–16 examples.
+- **3D latent diffusion:** operates on compressed volumetric representations rather than independent 2D slices.
+- **Anatomical conditioning:** tumor-mask conditioning with FiLM-style modulation and ControlNet-style residual injection.
+- **Multimodal volumes:** T1, T2, and FLAIR channels at `112 × 112 × 112` spatial resolution.
+- **Downstream utility:** best reported 16-shot configuration reaches **FID 85.40** and **AUC 0.987** for downstream classification.
 
 ## Architecture
 
-ALDM consists of two stages:
-
-1. **3D VAE**: Compresses MRI volumes (3×112×112×112) into latent space (8×28×28×28)
-2. **Conditional Latent Diffusion**: U-Net-based DDPM with anatomical mask conditioning
-
+```text
+3D MRI volume
+     ↓
+  VAE Encoder
+     ↓
+Latent volume  ───────────────┐
+     ↓                        │
+Diffusion U-Net ← tumor mask / control features
+     ↓              │
+ControlNet-style residuals + FiLM conditioning
+     ↓
+  VAE Decoder
+     ↓
+Synthetic 3D MRI
 ```
-Input MRI → VAE Encoder → Latent Space → Diffusion U-Net → VAE Decoder → Synthetic MRI
-                                              ↑
-                                         Tumor Mask (ControlNet)
-```
 
----
+The implementation uses a 3D VAE to compress `3 × 112 × 112 × 112` MRI volumes into an `8 × 28 × 28 × 28` latent space. A conditional U-Net-based DDPM then denoises those latents while incorporating anatomical mask information at multiple scales.
 
-## Results
+## Quantitative Results
 
-### Quantitative Performance (PDGM Target Domain)
+### PDGM target domain
 
 | Model | FID ↓ | SSIM ↑ | BAcc ↑ | F1 ↑ | AUC ↑ |
-|-------|-------|--------|--------|------|-------|
+| --- | ---: | ---: | ---: | ---: | ---: |
 | CGAN | 145.22 | 0.374 | 0.764 | 0.720 | 0.876 |
 | 3M-CGAN | 116.48 | 0.680 | 0.780 | 0.731 | 0.866 |
 | VAE-GAN | 88.18 | **0.750** | 0.751 | 0.675 | 0.882 |
 | **ALDM (K=16, s=3.0)** | **85.40** | 0.712 | **0.875** | **0.836** | **0.987** |
 
----
+## Repository Structure
+
+```text
+anatomically-conditioned-ldm/
+├── configs/                     # VAE and diffusion experiment configs
+├── src/
+│   ├── models/                  # 3D VAE, U-Net, diffusion components
+│   ├── data/                    # dataset and preprocessing code
+│   ├── training/                # training loops and EMA
+│   ├── evaluation/              # metrics and downstream CNN evaluation
+│   └── utils/                   # shared utilities
+├── scripts/                     # preprocessing, training, generation, evaluation
+├── baselines/                   # comparison models
+├── docs/                        # dataset/training/evaluation documentation
+├── checkpoints/                 # model weights stored separately
+├── results/                     # experiment outputs
+├── requirements.txt
+└── setup.py
+```
 
 ## Installation
 
 ### Requirements
+
 - Python 3.8+
 - PyTorch 2.0+
-- CUDA 11.8+ (for GPU training)
-- 24GB+ GPU memory (for 3D volumes)
-
-### Setup
+- CUDA 11.8+ recommended
+- 24 GB+ GPU memory recommended for full 3D training
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/aldm-mri-synthesis.git
-cd aldm-mri-synthesis
+git clone https://github.com/salmanbashashaik/anatomically-conditioned-ldm.git
+cd anatomically-conditioned-ldm
 
-# Create conda environment
 conda create -n aldm python=3.10
 conda activate aldm
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
----
+## Data Preparation
 
-## Quick Start
+The experiments use public MRI datasets from The Cancer Imaging Archive:
 
-### 1. Data Preparation
+- **UPENN-GBM** — source domain
+- **UCSF-PDGM** — target domain
 
-Download the datasets:
-- **GBM**: [UPENN-GBM Dataset](https://doi.org/10.7937/TCIA.709X-DN49)
-- **PDGM**: [UCSF-PDGM Dataset](https://doi.org/10.7937/3ec9-yk87)
+Preprocess a dataset with:
 
-Preprocess the data:
 ```bash
 python scripts/preprocess_data.py \
-    --input_dir /path/to/raw/data \
-    --output_dir ./data/processed \
-    --dataset gbm  # or pdgm
+  --input_dir /path/to/raw/data \
+  --output_dir ./data/processed \
+  --dataset gbm
 ```
 
-### 2. Training
+Use `--dataset pdgm` for the target domain. See [`docs/DATASET.md`](docs/DATASET.md) for the full preprocessing workflow.
 
-#### Stage 1: Train VAE on GBM
+## Training
+
+### 1. Train the source-domain VAE
+
 ```bash
 python train_vae.py \
-    --config configs/vae_gbm.yaml \
-    --data_dir ./data/processed/gbm \
-    --output_dir ./checkpoints/vae
+  --config configs/vae_gbm.yaml \
+  --data_dir ./data/processed/gbm \
+  --output_dir ./checkpoints/vae
 ```
 
-#### Stage 2: Train Diffusion Model
+### 2. Train the conditional diffusion model
+
 ```bash
 python train_diffusion.py \
-    --config configs/diffusion_10shot.yaml \
-    --vae_checkpoint ./checkpoints/vae/best.pth \
-    --data_dir ./data/processed/pdgm \
-    --output_dir ./checkpoints/diffusion
+  --config configs/diffusion_16shot.yaml \
+  --vae_checkpoint ./checkpoints/vae/best.pth \
+  --data_dir ./data/processed/pdgm \
+  --output_dir ./checkpoints/diffusion
 ```
 
-### 3. Inference
+## Inference
 
-Generate synthetic MRI volumes:
 ```bash
 python generate.py \
-    --vae_checkpoint ./checkpoints/vae/best.pth \
-    --diffusion_checkpoint ./checkpoints/diffusion/best.pth \
-    --mask_dir ./data/masks \
-    --output_dir ./outputs/synthetic \
-    --num_samples 16 \
-    --guidance_scale 3.0
+  --vae_checkpoint ./checkpoints/vae/best.pth \
+  --diffusion_checkpoint ./checkpoints/diffusion/best.pth \
+  --mask_dir ./data/masks \
+  --output_dir ./outputs/synthetic \
+  --num_samples 16 \
+  --guidance_scale 3.0
 ```
 
-### 4. Evaluation
+## Evaluation
 
 ```bash
 python evaluate.py \
-    --synthetic_dir ./outputs/synthetic \
-    --real_dir ./data/processed/pdgm/test \
-    --output_dir ./results
+  --synthetic_dir ./outputs/synthetic \
+  --real_dir ./data/processed/pdgm/test \
+  --output_dir ./results
 ```
 
----
-
-## Repository Structure
-
-```
-aldm-mri-synthesis/
-├── README.md                    # This file
-├── LICENSE                      # CC BY 4.0
-├── requirements.txt             # Dependencies
-├── setup.py                     # Package installation
-│
-├── configs/                     # Training configurations
-│   ├── vae_gbm.yaml
-│   ├── diffusion_10shot.yaml
-│   └── diffusion_16shot.yaml
-│
-├── src/                         # Source code
-│   ├── models/                  # VAE, U-Net, Diffusion, ControlNet
-│   ├── data/                    # Dataset and preprocessing
-│   ├── training/                # Training loops and EMA
-│   ├── evaluation/              # Metrics and downstream CNN
-│   └── utils/                   # I/O and utilities
-│
-├── scripts/                     # Executable scripts
-│   ├── preprocess_data.py
-│   ├── train_vae.py
-│   ├── train_diffusion.py
-│   ├── generate.py
-│   └── evaluate.py
-│
-├── baselines/                   # Baseline implementations
-│   ├── cgan/
-│   ├── cgan_3disc/
-│   └── vaegan/
-│
-├── docs/                        # Detailed documentation
-│   ├── DATASET.md
-│   ├── TRAINING.md
-│   ├── EVALUATION.md
-│   └── ARCHITECTURE.md
-│
-├── checkpoints/                 # Model weights (download separately)
-├── data/                        # Datasets (download separately)
-└── results/                     # Evaluation results
-```
-
----
+Evaluation includes image-distribution, structural-similarity, and downstream-classification metrics used in the paper.
 
 ## Pretrained Models
 
-Pretrained checkpoints are available upon request:
-
-| Model | Dataset | Epochs | Size |
-|-------|---------|--------|------|
-| VAE | GBM | 200 | ~30 MB |
-| Diffusion U-Net (16-shot) | PDGM | 100 | ~152 MB |
-| EMA Weights (16-shot) | PDGM | 100 | ~152 MB |
-| Latent Stats | GBM | - | <1 MB |
-
-**To request checkpoints**: Please contact [salmanbasha.shaik@unb.ca]
-
----
-
-## Datasets
-
-### GBM (Source Domain)
-- **Source**: [UPENN-GBM](https://doi.org/10.7937/TCIA.709X-DN49)
-- **Size**: ~828,000 slices
-- **Modalities**: T1, T2, FLAIR
-- **Format**: NIfTI
-
-### PDGM (Target Domain)
-- **Source**: [UCSF-PDGM](https://doi.org/10.7937/3ec9-yk87)
-- **Size**: ~12,000 images
-- **Modalities**: T1, T2, FLAIR
-- **Format**: NIfTI
-
-See [DATASET.md](docs/DATASET.md) for detailed preprocessing instructions.
-
----
-
-## Hyperparameters
-
-### VAE Training
-```yaml
-learning_rate: 1e-4
-batch_size: 1
-epochs: 200
-kl_weight: 1e-4
-kl_warmup: 0.35
-latent_channels: 8
-base_channels: 64
-```
-
-### Diffusion Training
-```yaml
-learning_rate: 2e-4
-batch_size: 1
-epochs: 300 (GBM) + 100 (PDGM)
-timesteps: 1000
-beta_schedule: linear
-beta_start: 1e-4
-beta_end: 2e-2
-guidance_scale: 3.0
-ema_decay: 0.999
-```
-
-See [configs/](configs/) for complete configurations.
-
----
+Model checkpoints are kept separate from the repository because of their size. For checkpoint availability, contact **sbashash@uwaterloo.ca**.
 
 ## Citation
 
-If you use this code or find our work helpful, please cite:
+If you use this implementation, please cite the CAN-AI 2026 paper:
 
-```bibtex
-@inproceedings{basha2026aldm,
-  title={Anatomically-conditioned Latent Diffusion Model for Data-Efficient Few-Shot Cross-Domain 3D Glioma MRI Synthesis},
-  author={Basha, Shaik Salman and [Co-authors]},
-  booktitle={Proceedings of the 39th Canadian Conference on Artificial Intelligence},
-  year={2026},
-  series={Proceedings of Machine Learning Research},
-  volume={318},
-  publisher={PMLR}
-}
-```
+> Shaik Salman Basha et al. “Anatomically-conditioned Latent Diffusion Model for Data-Efficient Few-Shot Cross-Domain 3D Glioma MRI Synthesis.” Proceedings of the 39th Canadian Conference on Artificial Intelligence, 2026.
 
----
+For the canonical citation metadata, use the published proceedings entry linked above.
 
 ## License
 
-This project is licensed under the Creative Commons Attribution 4.0 International License - see the [LICENSE](LICENSE) file for details.
-
----
+This repository is released under the Creative Commons Attribution 4.0 International License. See [`LICENSE`](LICENSE).
 
 ## Acknowledgments
 
-This work was conducted as part of the **Analytics Everywhere Lab** at the University of New Brunswick.
-
-- Supervisor: Dr. Hung Cao, UNB
-- Computing resources provided by UNB Laboratory Server
-- Datasets: UPENN-GBM and UCSF-PDGM from The Cancer Imaging Archive
-
----
+This work was conducted at the University of New Brunswick with public datasets from The Cancer Imaging Archive.
 
 ## Contact
 
-For questions or issues, please:
-- Open an issue on GitHub
-- Email: [salmanbasha.shaik@unb.ca]
-
----
-
----
-
-**Note**: This repository contains the official implementation of our CAN-AI 2026 paper. 
+For questions or issues, open a GitHub issue or email **sbashash@uwaterloo.ca**.
